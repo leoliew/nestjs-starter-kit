@@ -58,6 +58,20 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## 一个后端框架的常用功能
+
+- 连接多个数据库
+- 请求鉴权
+- 规范请求日志
+- response 状态码规范
+- request/response 命名规范 
+- 请求内容格式校验
+- 全局错误 catch，包括格式错误 catch
+- 接口缓存（暂时不重要）
+- 多模块之间互相引用规范
+- API 文档，并且可以鉴权
+
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
