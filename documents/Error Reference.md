@@ -6,8 +6,8 @@
 |-------------| ------- |
 | 400         | Bad Request -- Your request is invalid. Double-check your JSON-RPC body. |
 | 401         | Unauthorized -- You must authenticate your request with an API key. |
-| 403         | Forbidden -- You've hit your **capacity limit**, or your request was rejected by your app's **whitelist settings.** |
-| 429         | Too Many Requests -- You've exceeded your concurrent requests capacity or [Compute Units](https://docs.alchemy.com/reference/compute-units) per second capacity. Check out the [Throughput](https://docs.alchemy.com/reference/throughput) page for solutions. |
+| 403         | Forbidden -- You've hit your capacity limit, or your request was rejected by your app's **whitelist settings.** |
+| 429         | Too Many Requests -- You've exceeded your concurrent requests capacity or per second capacity. Check out the page for solutions. |
 | 500         | Internal Server Error -- We're unable to process your request right now. Get in touch with us if you see this. |
 
 
