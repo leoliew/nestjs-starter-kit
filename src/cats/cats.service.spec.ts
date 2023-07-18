@@ -1,8 +1,7 @@
-import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { CatsService } from './cats.service';
-import { Cat } from './schemas/cat.schema';
+import { Cats } from './schemas/cats.schema';
 
 const mockCat = {
   name: 'Cat #1',
@@ -10,42 +9,43 @@ const mockCat = {
   age: 4,
 };
 
-describe('CatsService', () => {
-  let service: CatsService;
-  let model: Model<Cat>;
+const catsArray = [
+  {
+    name: 'Cat #1',
+    breed: 'Breed #1',
+    age: 4,
+  },
+  {
+    name: 'Cat #2',
+    breed: 'Breed #2',
+    age: 2,
+  },
+];
 
-  const catsArray = [
-    {
-      name: 'Cat #1',
-      breed: 'Breed #1',
-      age: 4,
-    },
-    {
-      name: 'Cat #2',
-      breed: 'Breed #2',
-      age: 2,
-    },
-  ];
+describe('CatService', () => {
+  let service: CatsService;
+  let model: Model<Cats>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CatsService,
         {
-          provide: getModelToken('Cat'),
+          provide: 'CatsModel',
           useValue: {
             new: jest.fn().mockResolvedValue(mockCat),
             constructor: jest.fn().mockResolvedValue(mockCat),
             find: jest.fn(),
             create: jest.fn(),
+            save: jest.fn(),
             exec: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    service = module.get<CatsService>(CatsService);
-    model = module.get<Model<Cat>>(getModelToken('Cat'));
+    service = module.get(CatsService);
+    model = module.get<Model<Cats>>('CatsModel');
   });
 
   it('should be defined', () => {
@@ -69,6 +69,7 @@ describe('CatsService', () => {
       } as any),
     );
     const newCat = await service.create({
+      is_kitten: false,
       name: 'Cat #1',
       breed: 'Breed #1',
       age: 4,

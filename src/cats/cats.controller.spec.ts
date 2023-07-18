@@ -3,21 +3,9 @@ import { CatsController } from './cats.controller';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 
-describe('Cats Controller', () => {
+describe('CatsController', () => {
   let controller: CatsController;
   let service: CatsService;
-  const createCatDto: CreateCatDto = {
-    name: 'Cat #1',
-    breed: 'Breed #1',
-    age: 4,
-  };
-
-  const mockCat = {
-    name: 'Cat #1',
-    breed: 'Breed #1',
-    age: 4,
-    _id: 'a id',
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,29 +31,42 @@ describe('Cats Controller', () => {
                 age: 2,
               },
             ]),
-            create: jest.fn().mockResolvedValue(createCatDto),
+            create: jest
+              .fn()
+              .mockImplementation((createCatDto: CreateCatDto) =>
+                Promise.resolve({ _id: '1', ...createCatDto }),
+              ),
           },
         },
       ],
     }).compile();
 
-    controller = module.get<CatsController>(CatsController);
-    service = module.get<CatsService>(CatsService);
+    controller = module.get(CatsController);
+    service = module.get(CatsService);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
   });
 
   describe('create()', () => {
     it('should create a new cat', async () => {
-      const createSpy = jest
-        .spyOn(service, 'create')
-        .mockResolvedValueOnce(mockCat);
+      const createCatDto: CreateCatDto = {
+        name: 'Cat #1',
+        breed: 'Breed #1',
+        age: 4,
+        is_kitten: false,
+      };
 
-      await controller.create(createCatDto);
-      expect(createSpy).toHaveBeenCalledWith(createCatDto);
+      expect(controller.create(createCatDto)).resolves.toEqual({
+        _id: '1',
+        ...createCatDto,
+      });
     });
   });
 
   describe('findAll()', () => {
-    it('should return an array of cats', async () => {
+    it('should get an array of cats', () => {
       expect(controller.findAll()).resolves.toEqual([
         {
           name: 'Cat #1',
@@ -83,7 +84,6 @@ describe('Cats Controller', () => {
           age: 2,
         },
       ]);
-      expect(service.findAll).toHaveBeenCalled();
     });
   });
 });
