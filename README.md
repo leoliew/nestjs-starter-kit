@@ -37,16 +37,19 @@ $ npm run test:cov
 
 ## 一个后端框架的常用功能
 
-- 连接多个数据库
+- 连接多个数据库 Y
+- 数据库
+  - 数据库加密
+  - 数据库分页
 - 请求鉴权
 - 规范请求日志
 - response 状态码规范
-- request/response 命名规范 
+- request /response 命名规范 
 - 请求内容格式校验
 - 全局错误 catch，包括格式错误 catch
 - 接口缓存（暂时不重要）
 - 多模块之间互相引用规范
-- API 文档，并且可以鉴权
+- API swagger 文档，并且可以鉴权
 
 
 ## Support
