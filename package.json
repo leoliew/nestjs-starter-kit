@@ -27,6 +27,7 @@
     "@nestjs/swagger": "^7.1.1",
     "bcrypt": "^5.1.0",
     "config": "^3.3.9",
+    "moment-timezone": "^0.5.43",
     "mongoose": "7.3.1",
     "mongoose-encryption": "^2.1.2",
     "reflect-metadata": "0.1.13",

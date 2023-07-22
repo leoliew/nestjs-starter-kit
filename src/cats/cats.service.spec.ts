@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { CatsService } from './cats.service';
 import { Cats } from './schemas/cats.schema';
+import { getModelToken } from '@nestjs/mongoose';
+import { Constant } from '../lib';
 
 const mockCat = {
   name: 'Cat #1',
@@ -31,7 +33,7 @@ describe('CatService', () => {
       providers: [
         CatsService,
         {
-          provide: 'CatsModel',
+          provide: getModelToken('Cats', Constant.MONGODB.MAIN),
           useValue: {
             new: jest.fn().mockResolvedValue(mockCat),
             constructor: jest.fn().mockResolvedValue(mockCat),
@@ -43,9 +45,11 @@ describe('CatService', () => {
         },
       ],
     }).compile();
-
+    console.log(getModelToken('Cats', Constant.MONGODB.MAIN));
     service = module.get(CatsService);
-    model = module.get<Model<Cats>>('CatsModel');
+    model = module.get<Model<Cats>>(
+      getModelToken('Cats', Constant.MONGODB.MAIN),
+    );
   });
 
   it('should be defined', () => {
