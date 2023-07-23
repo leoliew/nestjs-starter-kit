@@ -38,32 +38,42 @@ $ npm run test:cov
 ## Feature
 
 ### Main Feature
-- Swagger / OpenAPI 3 included
-- API swagger 文档，并且可以鉴权
-- 接口缓存（暂时不重要）
-- 多模块之间互相引用规范
-- 全局错误 catch，包括格式错误 catch
 
+- [x] Swagger / OpenAPI 3 included
+- [x] Swagger API 文档可鉴权
+- [x] 全局错误捕获处理
+- [ ] 接口缓存设置
+- [ ] 接口防重限制
+- [ ] 多模块之间互相引用规范
 
 ### Http Request
-- 外部请求封装
-- 外部请求日志保存
-- 外部请求代理
 
+- [x] 常见 DTO 模版
+- [x] 登录鉴权 Demo
+- [x] Request 参数校验/转换
+- [x] Response 统一返回结构
+- [x] Response 统一返回状态码/自定义状态码
+- [x] 外部请求封装，支持日志保存，代理服务等
 
 ### Database
 
-- 连接多个数据库 Y
-- 数据库分页
+- [x] 支持连接多个 Mongodb 数据库
+- [x] Mongodb 数据库分页 Demo
+- [x] Mongodb 数据库字段加密 Demo
 
 ### Logger and Debugger
-- 规范请求日志
-- response 状态码规范
-- request /response 命名规范
+
+- [ ] 统一请求日志记录
 
 ### Security
-- 数据库加密
+
+- [ ] Google Cloud KMS 加密场景 Demo
 
 ### Setting
-- 请求鉴权
-- 请求内容格式校验
+
+- [x] 配置文件支持多环境
+
+### Release
+
+- [ ] Railway 支持
+- [x] Docker 构建支持 
