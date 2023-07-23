@@ -21,4 +21,18 @@ module.exports = {
       },
     ],
   },
+  assembly: {
+    host: 'https://api.assemblyai.com',
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  },
+  openai: {
+    host: 'https://api.openai.com',
+    apiKey: 'sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    needProxy: false,
+    proxy: 'http://127.0.0.1:7890',
+  },
+  swagger: {
+    swagger_user: 'user',
+    swagger_password: 'pass',
+  },
 };

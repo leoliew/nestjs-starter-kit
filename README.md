@@ -44,6 +44,13 @@ $ npm run test:cov
 - 多模块之间互相引用规范
 - 全局错误 catch，包括格式错误 catch
 
+
+### Http Request
+- 外部请求封装
+- 外部请求日志保存
+- 外部请求代理
+
+
 ### Database
 
 - 连接多个数据库 Y
