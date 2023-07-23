@@ -1,9 +1,61 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ValidationPipe } from './common/validation/validation.pipe';
+import * as basicAuth from 'express-basic-auth';
+import * as config from 'config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RequestMethod } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // API 默认前缀
+  app.setGlobalPrefix('/api/v1/', {
+    exclude: [{ path: 'health', method: RequestMethod.GET }],
+  });
+  // 跨域设置
+  app.enableCors();
+
+  // swagger 文档设置
+  app.use(
+    ['/docs', '/docs-json'],
+    basicAuth({
+      challenge: true,
+      users: {
+        [config.get('swagger.swagger_user')]: config.get(
+          'swagger.swagger_password',
+        ),
+      },
+    }),
+  );
+
+  const options = new DocumentBuilder()
+    .setTitle('DocNow API')
+    .setDescription('The DocNow API description')
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+      },
+      'firebaseToken',
+    )
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('docs', app, document);
+
+  // 错误处理和返回值format
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalPipes(new ValidationPipe());
+
   await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(
+    `Application(${process.env.NODE_ENV}) is running on: ${await app.getUrl()}`,
+  );
 }
 bootstrap();

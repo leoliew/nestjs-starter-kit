@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
 import * as mongooseEncryption from 'mongoose-encryption';
 import { timestamp } from 'rxjs';
 
-export type CatDocument = HydratedDocument<Cats>;
+export type CatsDocument = HydratedDocument<Cats>;
 
-@Schema({ collection: 'cat', timestamps: true })
+@Schema({ collection: 'cats', timestamps: true })
 export class Cats {
   @Prop()
   name: string;
@@ -25,14 +25,14 @@ export class Cats {
 
 const CatsSchema = SchemaFactory.createForClass(Cats);
 
-var encKey = 'lYWkoReE0A/kxr4JYCW6AgnALU4oR9cyRtPaE1ICZQY=';
-var sigKey =
-  'wjEDYPpRIiRVvRquMWSbtyt0F3nQAT8wU/2HVjefxrXoDgGOnGbsgA2Ro7m8o9YXBsYtYR+igK+XDGvqxuvUBA==';
-
-CatsSchema.plugin(mongooseEncryption, {
-  encryptionKey: encKey,
-  signingKey: sigKey,
-  encryptedFields: ['name', 'age'],
-});
+// var encKey = 'lYWkoReE0A/kxr4JYCW6AgnALU4oR9cyRtPaE1ICZQY=';
+// var sigKey =
+//   'wjEDYPpRIiRVvRquMWSbtyt0F3nQAT8wU/2HVjefxrXoDgGOnGbsgA2Ro7m8o9YXBsYtYR+igK+XDGvqxuvUBA==';
+//
+// CatsSchema.plugin(mongooseEncryption, {
+//   encryptionKey: encKey,
+//   signingKey: sigKey,
+//   encryptedFields: ['name', 'age'],
+// });
 
 export { CatsSchema };
