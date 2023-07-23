@@ -1,13 +1,26 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateCatDto, UpdateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cats } from './schemas/cats.schema';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   ReqByIdDto,
   ReqPaginateDto,
   RespPaginateDto,
 } from '../common/dto/crud.dto';
+import { AuthInterceptor } from '../common/interceptors/auth.interceptor';
 
 @ApiTags('cats')
 @Controller('cats')
@@ -58,6 +71,8 @@ export class CatsController {
     return this.catsService.updateOne(updateCatDto);
   }
 
+  @UseInterceptors(AuthInterceptor)
+  @ApiBearerAuth('token')
   @Post('deleteById')
   @ApiResponse({
     status: 200,

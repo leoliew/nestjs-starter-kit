@@ -3,37 +3,30 @@ import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { ApiModelPropertyOptional } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
 export class CreateCatDto {
-  @ApiProperty()
+  @ApiProperty({ required: true, default: 'Custard' })
   @IsNotEmpty()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 1 })
   @IsOptional()
   @IsNumber()
   readonly age: number;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'Persian' })
   readonly breed: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: true })
   @IsOptional()
   @IsBoolean()
   readonly is_kitten: boolean;
 }
 
-export class UpdateCatDto {
-  @ApiProperty({ required: true })
+export class UpdateCatDto extends CreateCatDto {
+  @ApiProperty({ required: true, default: '64b3d98a6004d4c1fd92a0ce' })
+  @IsNotEmpty()
   readonly _id: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, default: 'Custard' })
+  @IsOptional()
   readonly name: string;
-
-  @ApiProperty()
-  readonly age: number;
-
-  @ApiProperty()
-  readonly breed: string;
-
-  @ApiProperty()
-  readonly is_kitten: boolean;
 }

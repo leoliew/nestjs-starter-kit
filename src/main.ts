@@ -42,7 +42,7 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         name: 'Authorization',
       },
-      'firebaseToken',
+      'token',
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);
