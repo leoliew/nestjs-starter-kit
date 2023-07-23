@@ -18,4 +18,14 @@ export class CatsController {
   async findAll(): Promise<Cats[]> {
     return this.catsService.findAll();
   }
+
+  @Get()
+  async findById(id: string): Promise<Cats> {
+    return this.catsService.findById(id);
+  }
+
+  @Post()
+  async deleteById(id: string): Promise<Cats> {
+    return this.catsService.deleteById(id);
+  }
 }

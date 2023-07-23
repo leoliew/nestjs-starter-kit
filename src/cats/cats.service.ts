@@ -20,4 +20,19 @@ export class CatsService {
   async findAll(): Promise<Cats[]> {
     return await this.catsModel.find().exec();
   }
+
+  async findById(id: string): Promise<Cats> {
+    return await this.catsModel.findById(id).exec();
+  }
+
+  // async update(
+  //   id: string,
+  //   createCatDto: CreateCatDto,
+  // ): {
+  //   // return aw
+  // };
+
+  async deleteById(id: string): Promise<Cats> {
+    return await this.catsModel.findByIdAndDelete(id).exec();
+  }
 }
