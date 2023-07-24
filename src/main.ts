@@ -32,8 +32,8 @@ async function bootstrap() {
   );
 
   const options = new DocumentBuilder()
-    .setTitle('DocNow API')
-    .setDescription('The DocNow API description')
+    .setTitle('NestJs API')
+    .setDescription('The NestJs API description')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -42,7 +42,7 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         name: 'Authorization',
       },
-      'firebaseToken',
+      'token',
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);

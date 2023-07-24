@@ -1,11 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import * as mongooseEncryption from 'mongoose-encryption';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
 import { timestamp } from 'rxjs';
 
 export type CatsDocument = HydratedDocument<Cats>;
 
-@Schema({ collection: 'cats', timestamps: true })
+@Schema({
+  collection: 'cats',
+  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+})
 export class Cats {
   @Prop()
   name: string;
@@ -24,6 +28,8 @@ export class Cats {
 }
 
 const CatsSchema = SchemaFactory.createForClass(Cats);
+
+CatsSchema.plugin(mongoosePaginate);
 
 // var encKey = 'lYWkoReE0A/kxr4JYCW6AgnALU4oR9cyRtPaE1ICZQY=';
 // var sigKey =

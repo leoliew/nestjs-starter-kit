@@ -1,14 +1,12 @@
 import {
   ArgumentMetadata,
   BadRequestException,
-  HttpStatus,
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate, ValidationError } from 'class-validator';
 import * as _ from 'lodash';
-import { AppException } from '../exceptions/app.exception';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform {
@@ -16,7 +14,7 @@ export class ValidationPipe implements PipeTransform {
     if (!metadata.metatype || !ValidationPipe.toValidate(metadata.metatype)) {
       return value;
     }
-    const object = plainToClass(metadata.metatype, value);
+    const object = plainToInstance(metadata.metatype, value);
     const errors = await validate(object);
     if (errors.length > 0) {
       const msg = this.getMessage(errors[0]);
