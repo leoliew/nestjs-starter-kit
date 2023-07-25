@@ -35,6 +35,12 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Deploy to production
+
+- 设置环境变量 `NODE_ENV=production`
+- 根据 `config/production.js` 配置文件，设置环境变量
+- 使用 Docker 构建生产环境，并把相关的环境变量注入到容器中
+
 ## Feature
 
 ### Main Feature

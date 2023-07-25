@@ -13,11 +13,9 @@ COPY --chown=node:node . .
 RUN npm run build \
     && npm prune --production
 
-# ---
+# Docker image cache is used for the following stage
 
 FROM node:18.17.0-alpine
-
-ENV NODE_ENV production
 
 USER node
 WORKDIR /home/node
