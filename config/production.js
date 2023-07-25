@@ -1,7 +1,7 @@
 module.exports = {
   port: process.env.PORT || 3000,
   mongodb: {
-    debug: true,
+    debug: false,
     connections: [
       {
         name: 'main',
