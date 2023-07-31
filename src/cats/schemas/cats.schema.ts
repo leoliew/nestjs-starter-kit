@@ -11,7 +11,7 @@ export type CatsDocument = HydratedDocument<Cats>;
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 })
 export class Cats {
-  @Prop()
+  @Prop({ required: true, index: true })
   name: string;
 
   @Prop()
