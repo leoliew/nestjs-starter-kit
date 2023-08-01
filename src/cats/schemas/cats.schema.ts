@@ -31,6 +31,7 @@ const CatsSchema = SchemaFactory.createForClass(Cats);
 
 CatsSchema.plugin(mongoosePaginate);
 
+// use mongooseEncryption package for encrypting fields
 // var encKey = 'lYWkoReE0A/kxr4JYCW6AgnALU4oR9cyRtPaE1ICZQY=';
 // var sigKey =
 //   'wjEDYPpRIiRVvRquMWSbtyt0F3nQAT8wU/2HVjefxrXoDgGOnGbsgA2Ro7m8o9YXBsYtYR+igK+XDGvqxuvUBA==';
