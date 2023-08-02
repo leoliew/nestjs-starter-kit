@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+scripts/csfle/private_key.pem
+scripts/csfle/private_key.json
+
 # Logs
 logs
 *.log

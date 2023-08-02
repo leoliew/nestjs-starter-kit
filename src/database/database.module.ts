@@ -6,6 +6,15 @@ const { debug, connections } = config.get('mongodb');
 
 mongoose.set('debug', debug);
 
+// let kmsProviders = {
+//   local: {
+//     key: readMasterKey(),
+//   },
+// };
+// const keyDB = 'encryption';
+// const keyColl = '__keyVault';
+// const keyVaultNamespace = `${keyDB}.${keyColl}`;
+
 @Module({
   imports: connections.map((connection) => {
     return MongooseModule.forRoot(
