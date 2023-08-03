@@ -1,5 +1,7 @@
 const fs = require('fs');
 const gcpCredentials = require('./private_key.json');
+const config = require('config');
+const kmsConfig = config.get('kms');
 
 /*
 return credentials object and ensure it has been populated
@@ -21,13 +23,10 @@ function pemToBase64(pemKey) {
   return keyContent.replace(/\n/g, '').replace(/\s/g, '');
 }
 
-// 读取私钥文件
-const pemKey = fs.readFileSync('private_key_3.pem', 'utf-8');
-
 const credentials = {
   // Mongo Paths + URI
   MONGODB_URI:
-  //TODO:正式环境修改
+    //TODO:正式环境修改
     'mongodb+srv://docnow:docnow@test.m4jmtka.mongodb.net/test?retryWrites=true&w=majority',
   // MONGODB_URI: "mongodb://localhost:27017/test",
   // TODO:读取 docker
@@ -35,13 +34,13 @@ const credentials = {
     '/Users/Leo/Develop/project/nestjs/docs-in-use-encryption-examples/csfle/bin/mongocryptd',
 
   // GCP Credentials
-  GCP_EMAIL: 'kms-dev@docnow-au.iam.gserviceaccount.com',
+  GCP_EMAIL: gcpCredentials.client_email,
   GCP_PRIVATE_KEY: pemToBase64(gcpCredentials.private_key),
-  GCP_PROJECT_ID: 'docnow-au',
-  GCP_LOCATION: 'australia-southeast1',
-  GCP_KEY_RING: 'sample',
-  GCP_KEY_NAME: 'sample',
-  GCP_KEY_VERSION: '1',
+  GCP_PROJECT_ID: gcpCredentials.project_id,
+  GCP_LOCATION: kmsConfig.gcp_location,
+  GCP_KEY_RING: kmsConfig.gcp_key_ring,
+  GCP_KEY_NAME: kmsConfig.gcp_key_name,
+  GCP_KEY_VERSION: kmsConfig.gcp_key_version,
 };
 
 /*
@@ -50,24 +49,22 @@ check if credentials object contains placeholder values
 function checkForPlaceholders() {
   const errorBuffer = Array();
   const placeholderPattern = /^<.*>$/;
-  let errorMessage;
-  let error_message;
   for (const [key, value] of Object.entries(credentials)) {
     // check for placeholder text
     if (`${value}`.match(placeholderPattern)) {
-      errorMessage = `You must fill out the ${key} field of your credentials object.`;
+      let errorMessage = `You must fill out the ${key} field of your credentials object.`;
       errorBuffer.push(errorMessage);
     }
     // check if value is empty
-    else let error_message;
-    if (value === undefined) {
-      error_message = `The value for ${key} is empty. Please enter something for this value.`;
+    else if (value === undefined) {
+      let errorMessage = `The value for ${key} is empty. Please enter something for this value.`;
+      errorBuffer.push(errorMessage);
     }
   }
   // raise an error if errors in buffer
   let message;
   if (errorBuffer.length > 0) {
-    message = errorBuffer.join("\n");
+    message = errorBuffer.join('\n');
     throw message;
   }
 }

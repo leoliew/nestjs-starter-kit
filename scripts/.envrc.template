@@ -1,0 +1,4 @@
+# set environment variables
+export NODE_ENV=development
+# absolute path to config directory
+export NODE_CONFIG_DIR=./config

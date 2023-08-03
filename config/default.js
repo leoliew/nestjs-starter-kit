@@ -35,4 +35,10 @@ module.exports = {
     swagger_user: 'user',
     swagger_password: 'pass',
   },
+  kms: {
+    gcp_location: 'australia-southeast1',
+    gcp_key_ring: 'sample',
+    gcp_key_name: 'sample',
+    gcp_key_version: '1',
+  },
 };

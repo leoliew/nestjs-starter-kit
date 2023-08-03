@@ -2,7 +2,7 @@ const mongodb = require('mongodb');
 const { ClientEncryption } = require('mongodb-client-encryption');
 const { MongoClient, Binary } = mongodb;
 
-const { getCredentials } = require('./your_credentials');
+const { getCredentials } = require('./gcp-credentials');
 credentials = getCredentials();
 
 // start kms providers
@@ -13,8 +13,6 @@ const kmsProviders = {
     privateKey: credentials['GCP_PRIVATE_KEY'],
   },
 };
-
-console.log(kmsProviders);
 // end kms providers
 
 // start - data key opts
@@ -37,10 +35,11 @@ async function main() {
   const keyVaultDB = keyVaultClient.db(keyVaultDatabase);
   // Drop the Key Vault Collection in case you created this collection
   // in a previous run of this application.
-  await keyVaultDB.dropDatabase();
+  // await keyVaultDB.dropDatabase();
   // Drop the database storing your encrypted fields as all
   // the DEKs encrypting those fields were deleted in the preceding line.
-  await keyVaultClient.db('medicalRecords').dropDatabase();
+  // TODO: not necessary to delete the database
+  await keyVaultClient.db('test1').dropDatabase();
   const keyVaultColl = keyVaultDB.collection(keyVaultCollection);
   await keyVaultColl.createIndex(
     { keyAltNames: 1 },
@@ -64,7 +63,8 @@ async function main() {
   });
   const key = await encryption.createDataKey(provider, {
     masterKey: masterKey,
-    keyAltNames: ['demo-data-key'],
+    // TODO : change to db name
+    keyAltNames: ['demo'],
   });
   console.log('DataKeyId [base64]: ', key.toString('base64'));
   await keyVaultClient.close();
