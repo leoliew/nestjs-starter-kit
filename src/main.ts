@@ -6,10 +6,12 @@ import { ValidationPipe } from './common/validation/validation.pipe';
 import * as basicAuth from 'express-basic-auth';
 import * as config from 'config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { RequestMethod } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['verbose'],
+  });
 
   // API 默认前缀
   app.setGlobalPrefix('/api/v1/', {
@@ -54,7 +56,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);
-  console.log(
+  Logger.log(
     `Application(${process.env.NODE_ENV}) is running on: ${await app.getUrl()}`,
   );
 }

@@ -60,7 +60,7 @@ $ npm run test:cov
 - [x] Response 统一返回结构
 - [x] Response 统一返回状态码/自定义状态码
 - [x] 外部请求封装，支持日志保存，代理服务等
-- [ ] 流输出 Demo  
+- [x] 流输出 Demo  
 
 ### Database
 
@@ -70,7 +70,9 @@ $ npm run test:cov
 
 ### Logger and Debugger
 
+- [x] 日志级别设置
 - [ ] 统一请求日志记录
+- [ ] 请求日志选择性写入 Mongodb 
 
 ### Security
 
