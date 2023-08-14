@@ -41,4 +41,9 @@ module.exports = {
     gcp_key_name: 'sample',
     gcp_key_version: '1',
   },
+  crypto: {
+    algorithm: 'AES-256-CBC',
+    key: '5Mqxo6NUuJcUr4DpS56nmConIQH9ulTd',
+    iv: '5007063684459988',
+  },
 };
