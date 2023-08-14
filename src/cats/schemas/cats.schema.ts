@@ -1,17 +1,22 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
-import * as mongooseEncryption from 'mongoose-encryption';
-import * as mongoosePaginate from 'mongoose-paginate-v2';
-import { timestamp } from 'rxjs';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument, Model } from "mongoose";
+import * as mongooseEncryption from "mongoose-encryption";
+import * as mongoosePaginate from "mongoose-paginate-v2";
+import { timestamp } from "rxjs";
+import Bcrypt from "../../lib
 
 export type CatsDocument = HydratedDocument<Cats>;
 
 @Schema({
-  collection: 'cats',
-  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+  collection: "cats",
+  timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
 })
 export class Cats {
-  @Prop({ required: true, index: true })
+  @Prop({
+    required: true, index: true,
+    get: (value: string) => decrypt(value),
+    set: (value: string) => encrypt(value)
+  })
   name: string;
 
   @Prop()
@@ -22,9 +27,19 @@ export class Cats {
 
   @Prop({ type: timestamp })
   timestamps: {
-    createdAt: 'created_at';
-    updatedAt: 'updated_at';
+    createdAt: "created_at";
+    updatedAt: "updated_at";
   };
+}
+
+function encrypt(value: string) {
+  if (!value) return value;
+  return Bcrypt.encrypt(value);
+}
+
+function decrypt(value: string) {
+  if (!value) return value;
+  return Bcrypt.decrypt(value);
 }
 
 const CatsSchema = SchemaFactory.createForClass(Cats);
