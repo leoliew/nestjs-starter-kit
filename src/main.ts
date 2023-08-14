@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // swagger 文档设置
   app.use(
-    ['/docs', '/docs-json'],
+    ['/api/docs', '/docs-json'],
     basicAuth({
       challenge: true,
       users: {
@@ -46,7 +46,7 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('/api/docs', app, document);
 
   // 错误处理和返回值format
   app.useGlobalFilters(new HttpExceptionFilter());
