@@ -60,6 +60,7 @@ $ npm run test:cov
 - [x] Response 统一返回结构
 - [x] Response 统一返回状态码/自定义状态码
 - [x] 外部请求封装，支持日志保存，代理服务等
+- [ ] 流输出 Demo  
 
 ### Database
 
