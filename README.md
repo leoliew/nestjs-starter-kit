@@ -73,7 +73,8 @@ $ npm run test:cov
 
 ### Security
 
-- [ ] Google Cloud KMS 加密场景 Demo
+- [x] Google Cloud KMS 加密场景 Demo
+- [ ] 数据库字段加解密 Demo 
 
 ### Setting
 
@@ -81,5 +82,5 @@ $ npm run test:cov
 
 ### Release
 
-- [ ] Railway 支持
+- [x] Railway 支持
 - [x] Docker 构建支持 
