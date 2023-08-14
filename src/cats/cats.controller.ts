@@ -5,13 +5,16 @@ import {
   Body,
   Query,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { CreateCatDto, UpdateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cats } from './schemas/cats.schema';
+import { Response } from 'express';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiProduces,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -83,4 +86,26 @@ export class CatsController {
   async deleteById(@Body() reqByIdDto: ReqByIdDto): Promise<Cats> {
     return this.catsService.deleteById(reqByIdDto._id);
   }
+
+  @Get('streamText')
+  @ApiProduces('text/plain')
+  async getSlowText(@Res() res: Response) {
+    const text =
+      'This is a sample text. This is a sample text. This is a sample text.';
+    const delay = 100; // 延迟时间，单位为毫秒
+    // 设置响应头，指定内容类型
+    res.setHeader('Content-Type', 'text/plain');
+    // 将文本逐步写入响应
+    for (let i = 0; i < text.length; i++) {
+      const char = text.charAt(i);
+      res.write(char);
+      await delayAsync(delay);
+    }
+    // 结束响应
+    res.end();
+  }
+}
+
+function delayAsync(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
