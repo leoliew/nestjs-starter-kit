@@ -1,7 +1,10 @@
 # compiled output
 /dist
 /node_modules
+
+# environment variables
 .envrc
+.1password.envrc
 
 scripts/csfle/private_key.pem
 scripts/csfle/private_key.json
