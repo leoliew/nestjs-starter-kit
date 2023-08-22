@@ -37,53 +37,52 @@ $ npm run test:cov
 
 ## Deploy to production
 
-- 设置环境变量 `NODE_ENV=production`
-- 根据 `config/production.js` 配置文件，设置环境变量
-- 使用 Docker 构建生产环境，并把相关的环境变量注入到容器中
+- set environment variable `NODE_ENV=production`
+- according to `config/production.js` config file, set environment variable
+- use Docker to build production environment, and inject related environment variables into the container
 
 ## Feature
 
 ### Main Feature
 
-- [x] Swagger / OpenAPI 3 included
-- [x] Swagger API 文档可鉴权
-- [x] 全局错误捕获处理
-- [ ] 接口缓存设置
-- [ ] 接口防重限制
-- [ ] 多模块之间互相引用规范
+- [x] swagger / OpenAPI 3 included
+- [x] swagger API can auth with JWT
+- [x] global error handler
+- [ ] interface cache
+- [ ] interface anti-repetition limit
+- [ ] multi-module reference specification
 
 ### Http Request
 
-- [x] 常见 DTO 模版
-- [x] 登录鉴权 Demo
-- [x] Request 参数校验/转换
-- [x] Response 统一返回结构
-- [x] Response 统一返回状态码/自定义状态码
-- [x] 外部请求封装，支持日志保存，代理服务等
-- [x] 流输出 Demo  
+- [x] DTO Template
+- [x] login auth demo
+- [x] Request params validation/transform
+- [x] Response unified return structure
+- [x] Response unified return status code/custom status code
+- [x] external request encapsulation, support log saving, proxy service, etc.
+- [x] stream response demo
 
 ### Database
 
-- [x] 支持连接多个 Mongodb 数据库
-- [x] Mongodb 数据库分页 Demo
-- [x] Mongodb 数据库字段加密 Demo
+- [x] support multiple Mongodb databases
+- [x] support pagination of Mongodb database
+- [x] support Mongodb field encryption
 
 ### Logger and Debugger
 
-- [x] 日志级别设置
-- [ ] 统一请求日志记录
-- [ ] 请求日志选择性写入 Mongodb 
+- [x] support logs level setting
+- [ ] unified request log format
+- [ ] request log selective write to Mongodb
 
 ### Security
 
-- [x] Google Cloud KMS 加密场景 Demo
-- [ ] 数据库字段加解密 Demo 
+- [x] Google Cloud KMS encrypt/decrypt demo
 
 ### Setting
 
-- [x] 配置文件支持多环境
+- [x] support multiple environment configuration files
 
 ### Release
 
-- [x] Railway 支持
-- [x] Docker 构建支持 
+- [x] support [railway](https://railway.app/) deployment
+- [x] support docker build by Makefile
