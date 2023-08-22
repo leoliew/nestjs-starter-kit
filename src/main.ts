@@ -6,10 +6,13 @@ import { ValidationPipe } from './common/validation/validation.pipe';
 import * as basicAuth from 'express-basic-auth';
 import * as config from 'config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { RequestMethod } from '@nestjs/common';
+import { Logger, RequestMethod } from '@nestjs/common';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['verbose'],
+  });
 
   // API 默认前缀
   app.setGlobalPrefix('/api/v1/', {
@@ -20,7 +23,7 @@ async function bootstrap() {
 
   // swagger 文档设置
   app.use(
-    ['/docs', '/docs-json'],
+    ['/api/docs', '/docs-json'],
     basicAuth({
       challenge: true,
       users: {
@@ -46,15 +49,16 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('/api/docs', app, document);
 
   // 错误处理和返回值format
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3000);
-  console.log(
+  Logger.log(
     `Application(${process.env.NODE_ENV}) is running on: ${await app.getUrl()}`,
   );
 }

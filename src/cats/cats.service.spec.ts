@@ -5,6 +5,7 @@ import { Cats } from './schemas/cats.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { Constant } from '../lib';
 
+// TODO: fix unit test
 const mockCat = {
   name: 'Cat #1',
   breed: 'Breed #1',
