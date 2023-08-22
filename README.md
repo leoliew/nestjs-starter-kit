@@ -81,6 +81,7 @@ $ npm run test:cov
 ### Setting
 
 - [x] support multiple environment configuration files
+- [x] use .nvmrc to manage node version
 
 ### Release
 
