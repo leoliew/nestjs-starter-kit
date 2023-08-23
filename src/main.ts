@@ -10,6 +10,7 @@ import { Logger, RequestMethod } from '@nestjs/common';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
+  const port = config.get('port');
   const app = await NestFactory.create(AppModule, {
     logger: ['verbose'],
   });
@@ -57,7 +58,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3000);
+  await app.listen(port);
   Logger.log(
     `Application(${process.env.NODE_ENV}) is running on: ${await app.getUrl()}`,
   );
