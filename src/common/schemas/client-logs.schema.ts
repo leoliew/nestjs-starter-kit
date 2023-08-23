@@ -15,7 +15,7 @@ export class ClientLogs extends Document {
   request_id!: string;
 
   @Prop({ type: String, comment: 'User ID' })
-  user_id!: string;
+  user_id: string;
 
   @Prop({
     type: String,

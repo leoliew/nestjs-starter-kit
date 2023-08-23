@@ -5,17 +5,15 @@ import {
   CallHandler,
   HttpException,
   Logger,
-  Inject,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Constant, DateUtils } from '../../lib';
 import { AppException } from '../exceptions/app.exception';
-import { Types, Model, PaginateModel } from 'mongoose';
+import { Types, Model } from 'mongoose';
 import { ClientLogs } from '../schemas/client-logs.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Cats } from '../../cats/schemas/cats.schema';
 
 const sortKeys = [
   'request_id',
@@ -54,18 +52,8 @@ const formatRequestFileLog = function (log: any) {
  */
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  // @Inject('ClientLogsModel')
-  // private readonly clientLogsModel: Model<ClientLogs>;
-
-  // constructor(
-  //   @InjectModel('Cats', Constant.MONGODB.MAIN)
-  //   private readonly catsModel: PaginateModel<Cats>,
-  // ) {}
-
-  constructor(
-    @InjectModel('ClientLogs', Constant.MONGODB.MAIN)
-    private readonly clientLogs: Model<ClientLogs>,
-  ) {}
+  @InjectModel('ClientLogs', Constant.MONGODB.LOGS)
+  private readonly clientLogs: Model<ClientLogs>;
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
@@ -75,8 +63,8 @@ export class LoggingInterceptor implements NestInterceptor {
         _.get(request.headers, 'ali-cdn-real-ip') +
         ',' +
         _.get(request.headers, 'x-forwarded-for') || 'none';
-    const requestId = request.headers['x-request-id'] || new Types.ObjectId();
-    const requestTime = Date.now();
+    const request_id = request.headers['x-request-id'] || new Types.ObjectId();
+    const request_time = Date.now();
     const url = request.url;
     const requestParams = _.cloneDeep({
       ...request.query,
@@ -88,31 +76,31 @@ export class LoggingInterceptor implements NestInterceptor {
     const format = {
       type: 'in',
       params: requestParams,
-      requestId,
+      request_id,
       url,
       ip,
-      httpMethod: request.method,
-      requestTime: DateUtils.getCurrentTime(requestTime),
+      http_method: request.method,
+      request_time: DateUtils.getCurrentTime(request_time),
     };
 
     return next.handle().pipe(
       tap((data) => {
         const tapRequest = context.switchToHttp().getRequest();
-        const userId = tapRequest.body['_userId'] || 'none';
-        const responseTime = Date.now();
-        const retCode = _.get(data, 'code', '0');
-        const retMsg = _.get(data, 'message', 'success');
+        const user_id = tapRequest.body['_userId'] || 'none';
+        const response_time = Date.now();
+        const resp_code = _.get(data, 'code', '0');
+        const resp_msg = _.get(data, 'message', 'success');
         const response = data;
         const log = {
           ...format,
-          responseTime: DateUtils.getCurrentTime(responseTime),
-          retCode,
-          retMsg,
+          response_time: DateUtils.getCurrentTime(response_time),
+          resp_code,
+          resp_msg,
           response,
           body,
           params,
-          userId,
-          useTime: responseTime - requestTime,
+          user_id,
+          use_time: response_time - request_time,
         } as any;
         const fileLog = formatRequestFileLog(log);
         if (!/health/.exec(url)) {
@@ -120,39 +108,41 @@ export class LoggingInterceptor implements NestInterceptor {
           const requestLog = {
             ...format,
             status: 'finish',
-            responseTime,
+            response_time,
             response,
-            useTime: DateUtils.diff(requestTime, responseTime, 'ms'),
+            use_time: DateUtils.diff(request_time, response_time, 'ms'),
           };
           if (!/dashboard/.test(url) && !/card/.test(url)) {
-            // this.clientLogsModel.create(requestLog).then().catch();
+            // TODO: adjust log , to save user_id
+            console.log(requestLog);
+            this.clientLogs.create(requestLog).then().catch();
           }
         }
       }),
 
       catchError((error) => {
-        let retCode = 500;
+        let resp_code = 500;
         if (error instanceof AppException) {
-          retCode = -1;
+          resp_code = -1;
         } else if (error instanceof HttpException) {
-          retCode = error.getStatus();
+          resp_code = error.getStatus();
         }
         const tapRequest = context.switchToHttp().getRequest();
-        const userId = tapRequest.body['userId'] || 'none';
-        const responseTime = Date.now();
-        const retMsg = _.get(error, 'message', 'none');
-        const response = { code: retCode, message: retMsg };
+        const user_id = tapRequest.body['userId'] || 'none';
+        const response_time = Date.now();
+        const resp_msg = _.get(error, 'message', 'none');
+        const response = { code: resp_code, message: resp_msg };
         const log = {
           ...format,
-          responseTime: DateUtils.getCurrentTime(responseTime),
-          retCode,
-          retMsg,
-          response: { code: retCode, message: retMsg },
+          response_time: DateUtils.getCurrentTime(response_time),
+          resp_code,
+          resp_msg,
+          response: { code: resp_code, message: resp_msg },
           body,
           params,
-          useTime: responseTime - requestTime,
+          use_time: response_time - request_time,
           errorStack: error.stack,
-          userId,
+          user_id,
         } as any;
         const fileLog = formatRequestFileLog(log);
         if (!/health/.exec(url)) {
@@ -161,12 +151,12 @@ export class LoggingInterceptor implements NestInterceptor {
         const requestLog = {
           ...format,
           status: 'fail',
-          responseTime,
+          response_time,
           response,
-          useTime: DateUtils.diff(requestTime, responseTime, 'ms'),
+          use_time: DateUtils.diff(request_time, response_time, 'ms'),
         };
         if (!/dashboard/.test(url) && !/card/.test(url)) {
-          // this.clientLogsModel.create(requestLog).then().catch();
+          this.clientLogs.create(requestLog).then().catch();
         }
         return throwError(error);
       }),
