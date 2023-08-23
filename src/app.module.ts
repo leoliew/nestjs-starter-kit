@@ -11,6 +11,7 @@ import {
   ClientLogsSchema,
 } from './common/schemas/client-logs.schema';
 import { Constant } from './lib';
+import { ExternalModule } from './external/external.module';
 
 mongoose.set('debug', true);
 
@@ -23,6 +24,7 @@ mongoose.set('debug', true);
     DatabaseModule,
     CatsModule,
     CommonModule,
+    ExternalModule,
   ],
   providers: [
     {
