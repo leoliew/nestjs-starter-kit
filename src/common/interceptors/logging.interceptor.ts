@@ -10,10 +10,12 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DateUtils } from '../../lib';
+import { Constant, DateUtils } from '../../lib';
 import { AppException } from '../exceptions/app.exception';
-import { Types, Model } from 'mongoose';
+import { Types, Model, PaginateModel } from 'mongoose';
 import { ClientLogs } from '../schemas/client-logs.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cats } from '../../cats/schemas/cats.schema';
 
 const sortKeys = [
   'request_id',
@@ -52,8 +54,18 @@ const formatRequestFileLog = function (log: any) {
  */
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  @Inject('ClientLogsModel')
-  private readonly clientLogsModel: Model<ClientLogs>;
+  // @Inject('ClientLogsModel')
+  // private readonly clientLogsModel: Model<ClientLogs>;
+
+  // constructor(
+  //   @InjectModel('Cats', Constant.MONGODB.MAIN)
+  //   private readonly catsModel: PaginateModel<Cats>,
+  // ) {}
+
+  constructor(
+    @InjectModel('ClientLogs', Constant.MONGODB.MAIN)
+    private readonly clientLogs: Model<ClientLogs>,
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
@@ -113,7 +125,7 @@ export class LoggingInterceptor implements NestInterceptor {
             useTime: DateUtils.diff(requestTime, responseTime, 'ms'),
           };
           if (!/dashboard/.test(url) && !/card/.test(url)) {
-            this.clientLogsModel.create(requestLog).then().catch();
+            // this.clientLogsModel.create(requestLog).then().catch();
           }
         }
       }),
@@ -154,7 +166,7 @@ export class LoggingInterceptor implements NestInterceptor {
           useTime: DateUtils.diff(requestTime, responseTime, 'ms'),
         };
         if (!/dashboard/.test(url) && !/card/.test(url)) {
-          this.clientLogsModel.create(requestLog).then().catch();
+          // this.clientLogsModel.create(requestLog).then().catch();
         }
         return throwError(error);
       }),

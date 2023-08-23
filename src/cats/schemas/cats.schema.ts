@@ -1,11 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
-import * as mongooseEncryption from 'mongoose-encryption';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
 import { timestamp } from 'rxjs';
 import { Bcrypt } from '../../lib';
-
-export type CatsDocument = HydratedDocument<Cats>;
 
 @Schema({
   collection: 'cats',
