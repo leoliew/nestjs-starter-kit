@@ -36,6 +36,7 @@ const sortKeys = [
 ];
 
 const formatRequestFileLog = function (log: any) {
+  // TODO: 检查一下为什么不能 string format
   const values = sortKeys.map((key) => {
     const value = log[key];
     if (typeof value === 'object') {
@@ -114,7 +115,7 @@ export class LoggingInterceptor implements NestInterceptor {
           };
           if (!/dashboard/.test(url) && !/card/.test(url)) {
             // TODO: adjust log , to save user_id
-            console.log(requestLog);
+            // console.log(requestLog);
             this.clientLogs.create(requestLog).then().catch();
           }
         }

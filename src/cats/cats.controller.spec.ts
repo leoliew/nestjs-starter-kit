@@ -5,7 +5,7 @@ import { CatsService } from './cats.service';
 
 describe('CatsController', () => {
   let controller: CatsController;
-  let service: CatsService;
+  // let service: CatsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +42,7 @@ describe('CatsController', () => {
     }).compile();
 
     controller = module.get(CatsController);
-    service = module.get(CatsService);
+    // service = module.get(CatsService);
   });
 
   it('should be defined', () => {

@@ -14,7 +14,7 @@ export class AuthInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const response = context.switchToHttp().getResponse();
+    // const response = context.switchToHttp().getResponse();
 
     let token = request.headers.authorization;
     if (token != null && token != '') {

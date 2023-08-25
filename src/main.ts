@@ -7,7 +7,6 @@ import * as basicAuth from 'express-basic-auth';
 import * as config from 'config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, RequestMethod } from '@nestjs/common';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const port = config.get('port');
@@ -55,7 +54,6 @@ async function bootstrap() {
   // error handler and response format
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
-  // app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(port);

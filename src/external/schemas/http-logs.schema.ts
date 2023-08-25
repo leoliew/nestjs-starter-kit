@@ -1,17 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export enum ProxyLogStatus {
+export enum HttpLogStatus {
   PENDING = 'pending',
   ERROR = 'error',
   FINISH = 'finish',
 }
 
 @Schema({
-  collection: 'proxy_logs',
+  collection: 'http_logs',
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 })
-export class ProxyLogs extends Document {
+export class HttpLogs extends Document {
   @Prop({ required: true, index: true, comment: 'request url' })
   url: string;
 
@@ -28,11 +28,11 @@ export class ProxyLogs extends Document {
     type: String,
     required: true,
     index: true,
-    default: ProxyLogStatus.PENDING,
-    enum: Object.values(ProxyLogStatus),
+    default: HttpLogStatus.PENDING,
+    enum: Object.values(HttpLogStatus),
     comment: '状态',
   })
-  status: ProxyLogStatus;
+  status: HttpLogStatus;
 
   @Prop({ index: true, comment: 'http service name' })
   service: string;
@@ -56,4 +56,4 @@ export class ProxyLogs extends Document {
   response: object;
 }
 
-export const ProxyLogsSchema = SchemaFactory.createForClass(ProxyLogs);
+export const HttpLogsSchema = SchemaFactory.createForClass(HttpLogs);

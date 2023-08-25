@@ -3,11 +3,11 @@ import { OpenAIProxy } from './openai.proxy';
 import { AssemblyProxy } from './assembly.proxy';
 import { Request } from './request';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProxyLogs, ProxyLogsSchema } from './schemas/proxy-logs.schema';
+import { HttpLogs, HttpLogsSchema } from './schemas/http-logs.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: ProxyLogs.name, schema: ProxyLogsSchema },
+      { name: HttpLogs.name, schema: HttpLogsSchema },
     ]),
   ],
   providers: [AssemblyProxy, OpenAIProxy, Request],
