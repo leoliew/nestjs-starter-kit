@@ -24,7 +24,8 @@ mongoose.set('debug', true);
     DatabaseModule,
     CatsModule,
     CommonModule,
-    ExternalModule,
+    // TODO: fix database error
+    // ExternalModule,
   ],
   providers: [
     {
