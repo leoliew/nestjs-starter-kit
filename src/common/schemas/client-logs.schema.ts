@@ -14,7 +14,7 @@ export class ClientLogs extends Document {
   @Prop({ type: String, comment: 'Request ID', required: true })
   request_id: string;
 
-  @Prop({ type: String, comment: 'User ID' })
+  @Prop({ type: String, comment: 'User ID', index: true })
   user_id: string;
 
   @Prop({
