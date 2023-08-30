@@ -71,8 +71,8 @@ $ npm run test:cov
 ### Logger and Debugger
 
 - [x] support logs level setting
-- [ ] unified request log format
-- [ ] request log selective write to Mongodb
+- [x] unified request log format
+- [x] request log selective write to Mongodb
 
 ### Security
 
