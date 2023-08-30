@@ -36,7 +36,6 @@ const sortKeys = [
 ];
 
 const formatRequestFileLog = function (log: any) {
-  // TODO: 检查一下为什么不能 string format
   const values = sortKeys.map((key) => {
     const value = log[key];
     if (typeof value === 'object') {
@@ -48,6 +47,8 @@ const formatRequestFileLog = function (log: any) {
   return values.join('|#|');
 };
 
+const excludePatterns = [/dashboard/, /card/, /health/];
+
 /**
  * logs middleware
  */
@@ -58,25 +59,18 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const ip =
-      request.headers['ip'] +
-        ',' +
-        _.get(request.headers, 'ali-cdn-real-ip') +
-        ',' +
-        _.get(request.headers, 'x-forwarded-for') || 'none';
+    const ip = _.get(request.headers, 'x-forwarded-for') || 'none';
     const request_id = request.headers['x-request-id'] || new Types.ObjectId();
     const request_time = Date.now();
     const url = request.url;
-    const requestParams = _.cloneDeep({
-      ...request.query,
-      ...request.body,
-      ...request.params,
-    });
-    const body = _.cloneDeep(request.body);
-    const params = _.cloneDeep(request.query);
+    const body = _.cloneDeep(request.body) || {};
+    const params = _.cloneDeep(request.params) || {};
+    const query = _.cloneDeep(request.query) || {};
     const format = {
       type: 'in',
-      params: requestParams,
+      params,
+      body,
+      query,
       request_id,
       url,
       ip,
@@ -87,7 +81,8 @@ export class LoggingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((data) => {
         const tapRequest = context.switchToHttp().getRequest();
-        const user_id = tapRequest.body['_userId'] || 'none';
+        const user_id =
+          tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
         const response_time = Date.now();
         const resp_code = _.get(data, 'code', '0');
         const resp_msg = _.get(data, 'message', 'success');
@@ -98,38 +93,22 @@ export class LoggingInterceptor implements NestInterceptor {
           resp_code,
           resp_msg,
           response,
-          body,
-          params,
           user_id,
-          use_time: response_time - request_time,
+          use_time: DateUtils.diff(request_time, response_time, 'ms'),
+          error_stack: '',
         } as any;
         const fileLog = formatRequestFileLog(log);
-        if (!/health/.exec(url)) {
+        if (!excludePatterns.some((pattern) => pattern.test(url))) {
           Logger.log(fileLog);
-          const requestLog = {
-            ...format,
-            status: 'finish',
-            response_time,
-            response,
-            use_time: DateUtils.diff(request_time, response_time, 'ms'),
-          };
-          if (!/dashboard/.test(url) && !/card/.test(url)) {
-            // TODO: adjust log , to save user_id
-            // console.log(requestLog);
-            this.clientLogs.create(requestLog).then().catch();
-          }
+          this.clientLogs.create(log).then().catch();
         }
       }),
 
       catchError((error) => {
-        let resp_code = 500;
-        if (error instanceof AppException) {
-          resp_code = -1;
-        } else if (error instanceof HttpException) {
-          resp_code = error.getStatus();
-        }
+        let resp_code = Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE;
         const tapRequest = context.switchToHttp().getRequest();
-        const user_id = tapRequest.body['userId'] || 'none';
+        const user_id =
+          tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
         const response_time = Date.now();
         const resp_msg = _.get(error, 'message', 'none');
         const response = { code: resp_code, message: resp_msg };
@@ -139,27 +118,16 @@ export class LoggingInterceptor implements NestInterceptor {
           resp_code,
           resp_msg,
           response: { code: resp_code, message: resp_msg },
-          body,
-          params,
-          use_time: response_time - request_time,
-          errorStack: error.stack,
           user_id,
+          use_time: DateUtils.diff(request_time, response_time, 'ms'),
+          error_stack: error.stack,
         } as any;
         const fileLog = formatRequestFileLog(log);
-        if (!/health/.exec(url)) {
+        if (!excludePatterns.some((pattern) => pattern.test(url))) {
           Logger.error(fileLog);
+          this.clientLogs.create(log).then().catch();
         }
-        const requestLog = {
-          ...format,
-          status: 'fail',
-          response_time,
-          response,
-          use_time: DateUtils.diff(request_time, response_time, 'ms'),
-        };
-        if (!/dashboard/.test(url) && !/card/.test(url)) {
-          this.clientLogs.create(requestLog).then().catch();
-        }
-        return throwError(error);
+        throw new AppException(error);
       }),
     );
   }
