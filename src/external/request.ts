@@ -2,20 +2,18 @@ import * as _ from 'lodash';
 import * as request from 'superagent';
 import * as withProxy from 'superagent-proxy';
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  RequestLogs,
-  RequestLogsSchema,
-  RequestLogStatus,
-} from './schemas/request-logs.schema';
+import { RequestLogs, RequestLogStatus } from './schemas/request-logs.schema';
 import DateUtils from '../lib/date-utils';
 import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Constant } from '../lib';
 
 withProxy(request);
 
 @Injectable()
 export class Request {
-  @Inject('RequestLogsModel')
-  private readonly requestLogsModel: Model<RequestLogs>;
+  @InjectModel('RequestLogs', Constant.MONGODB.LOGS)
+  private readonly requestLogs: Model<RequestLogs>;
 
   protected name;
 
@@ -74,7 +72,7 @@ export class Request {
     );
     res['useTime'] = proxyLog['useTime'];
     if (!skipLog) {
-      await this.requestLogsModel.create(proxyLog);
+      await this.requestLogs.create(proxyLog);
     }
     return response;
   }

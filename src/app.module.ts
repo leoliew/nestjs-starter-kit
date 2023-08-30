@@ -3,7 +3,10 @@ import { CatsModule } from './cats/cats.module';
 import mongoose from 'mongoose';
 import { DatabaseModule } from './database/database.module';
 import { CommonModule } from './common/common.module';
-mongoose.set('debug', true);
+import { ExternalModule } from './external/external.module';
+import * as config from 'config';
+
+mongoose.set('debug', config.get('mongodb.debug'));
 
 @Module({
   imports: [
@@ -11,7 +14,7 @@ mongoose.set('debug', true);
     CatsModule,
     CommonModule,
     // TODO: fix database error
-    // ExternalModule,
+    ExternalModule,
   ],
 })
 export class AppModule {}
