@@ -2,7 +2,11 @@ import * as _ from 'lodash';
 import * as request from 'superagent';
 import * as withProxy from 'superagent-proxy';
 import { Inject, Injectable } from '@nestjs/common';
-import { HttpLogs, HttpLogStatus } from './schemas/http-logs.schema';
+import {
+  RequestLogs,
+  RequestLogsSchema,
+  RequestLogStatus,
+} from './schemas/request-logs.schema';
 import DateUtils from '../lib/date-utils';
 import { Model } from 'mongoose';
 
@@ -10,8 +14,8 @@ withProxy(request);
 
 @Injectable()
 export class Request {
-  @Inject('ProxyLogsModel')
-  private readonly httpLogsModel: Model<HttpLogs>;
+  @Inject('RequestLogsModel')
+  private readonly requestLogsModel: Model<RequestLogs>;
 
   protected name;
 
@@ -32,7 +36,7 @@ export class Request {
       query,
       headers: options.header,
       body,
-      status: HttpLogStatus.PENDING,
+      status: RequestLogStatus.PENDING,
     };
     let res = null;
     let response = null;
@@ -50,7 +54,7 @@ export class Request {
       }
       res = await agent;
       response = JSON.parse(res.text);
-      proxyLog.status = HttpLogStatus.FINISH;
+      proxyLog.status = RequestLogStatus.FINISH;
       proxyLog['response'] = response;
     } catch (err) {
       response = {
@@ -58,7 +62,7 @@ export class Request {
         status: err.status,
         body: _.get(err, 'response.body'),
       };
-      proxyLog.status = HttpLogStatus.ERROR;
+      proxyLog.status = RequestLogStatus.ERROR;
       proxyLog['response'] = response;
     }
     // 保存 proxy log 数据
@@ -70,7 +74,7 @@ export class Request {
     );
     res['useTime'] = proxyLog['useTime'];
     if (!skipLog) {
-      await this.httpLogsModel.create(proxyLog);
+      await this.requestLogsModel.create(proxyLog);
     }
     return response;
   }

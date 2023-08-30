@@ -1,19 +1,26 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export enum HttpLogStatus {
+export enum RequestLogStatus {
   PENDING = 'pending',
   ERROR = 'error',
   FINISH = 'finish',
 }
 
 @Schema({
-  collection: 'http_logs',
+  collection: 'request_logs',
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 })
-export class HttpLogs extends Document {
+export class RequestLogs extends Document {
   @Prop({ required: true, index: true, comment: 'request url' })
   url: string;
+
+  // according to your business
+  @Prop({ comment: 'identifier', type: Object })
+  identifier: {
+    user_id: string;
+    scribe_id: string;
+  };
 
   @Prop({ comment: 'request time' })
   request_time: Date;
@@ -21,20 +28,19 @@ export class HttpLogs extends Document {
   @Prop({ comment: 'response time' })
   response_time: Date;
 
-  @Prop({ index: true, comment: '请求耗时 ms' })
+  @Prop({ comment: '请求耗时 ms' })
   use_time: number;
 
   @Prop({
     type: String,
     required: true,
-    index: true,
-    default: HttpLogStatus.PENDING,
-    enum: Object.values(HttpLogStatus),
+    default: RequestLogStatus.PENDING,
+    enum: Object.values(RequestLogStatus),
     comment: '状态',
   })
-  status: HttpLogStatus;
+  status: RequestLogStatus;
 
-  @Prop({ index: true, comment: 'http service name' })
+  @Prop({ comment: 'http service name' })
   service: string;
 
   @Prop({ comment: 'http method' })
@@ -54,6 +60,9 @@ export class HttpLogs extends Document {
 
   @Prop({ comment: 'response', type: Object })
   response: object;
+
+  @Prop({ comment: 'error message', type: String })
+  error_msg: string;
 }
 
-export const HttpLogsSchema = SchemaFactory.createForClass(HttpLogs);
+export const RequestLogsSchema = SchemaFactory.createForClass(RequestLogs);
