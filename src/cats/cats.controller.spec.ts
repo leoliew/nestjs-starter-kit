@@ -67,24 +67,23 @@ describe('CatsController', () => {
 
   describe('findAll()', () => {
     it('should get an array of cats', () => {
-      // TODO: fix this test
-      // expect(controller.findAll()).resolves.toEqual([
-      //   {
-      //     name: 'Cat #1',
-      //     breed: 'Bread #1',
-      //     age: 4,
-      //   },
-      //   {
-      //     name: 'Cat #2',
-      //     breed: 'Breed #2',
-      //     age: 3,
-      //   },
-      //   {
-      //     name: 'Cat #3',
-      //     breed: 'Breed #3',
-      //     age: 2,
-      //   },
-      // ]);
+      expect(controller.findAll({ page: 1, limit: 10 })).resolves.toEqual([
+        {
+          name: 'Cat #1',
+          breed: 'Bread #1',
+          age: 4,
+        },
+        {
+          name: 'Cat #2',
+          breed: 'Breed #2',
+          age: 3,
+        },
+        {
+          name: 'Cat #3',
+          breed: 'Breed #3',
+          age: 2,
+        },
+      ]);
     });
   });
 });

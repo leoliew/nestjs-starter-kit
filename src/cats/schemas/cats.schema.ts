@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
-import { timestamp } from 'rxjs';
+import { Document } from 'mongoose';
 import { Bcrypt } from '../../lib';
 
 @Schema({
   collection: 'cats',
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 })
-export class Cats {
+export class Cats extends Document {
   @Prop({
     required: true,
     index: true,
