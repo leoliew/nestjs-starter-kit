@@ -22,11 +22,8 @@ export class Cats {
   @Prop()
   breed: string;
 
-  @Prop({ type: timestamp })
-  timestamps: {
-    createdAt: 'created_at';
-    updatedAt: 'updated_at';
-  };
+  @Prop()
+  is_kitten: boolean;
 }
 
 function encrypt(value: string) {

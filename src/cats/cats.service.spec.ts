@@ -1,33 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
+import { PaginateModel, Types } from 'mongoose';
 import { CatsService } from './cats.service';
 import { Cats } from './schemas/cats.schema';
 import { getModelToken } from '@nestjs/mongoose';
 import { Constant } from '../lib';
+import { mockPagination } from '../../test/test-helper';
 
-// TODO: fix unit test
-const mockCat = {
-  name: 'Cat #1',
-  breed: 'Breed #1',
-  age: 4,
-};
-
-const catsArray = [
-  {
-    name: 'Cat #1',
-    breed: 'Breed #1',
-    age: 4,
-  },
-  {
-    name: 'Cat #2',
-    breed: 'Breed #2',
-    age: 2,
-  },
-];
+const mockCat = ({
+  name = 'Cat #1',
+  breed = 'Breed #1',
+  age = 4,
+  is_kitten = true,
+}): Cats => ({
+  name,
+  age,
+  breed,
+  is_kitten,
+});
 
 describe('CatService', () => {
   let service: CatsService;
-  let model: Model<Cats>;
+  let model: PaginateModel<Cats>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,51 +28,44 @@ describe('CatService', () => {
         CatsService,
         {
           provide: getModelToken('Cats', Constant.MONGODB.MAIN),
-          useValue: {
-            new: jest.fn().mockResolvedValue(mockCat),
-            constructor: jest.fn().mockResolvedValue(mockCat),
-            find: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            exec: jest.fn(),
-          },
+          useValue: mockPagination(mockCat({})),
         },
       ],
     }).compile();
-    console.log(getModelToken('Cats', Constant.MONGODB.MAIN));
     service = module.get(CatsService);
-    model = module.get<Model<Cats>>(
+    model = module.get<PaginateModel<Cats>>(
       getModelToken('Cats', Constant.MONGODB.MAIN),
     );
   });
 
-  it('should be defined', () => {
+  it('defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return all cats', async () => {
-    jest.spyOn(model, 'find').mockReturnValue({
-      exec: jest.fn().mockResolvedValueOnce(catsArray),
-    } as any);
-    // TODO: fix unit test
-    // const cats = await service.findAll();
-    // expect(cats).toEqual(catsArray);
+  it('findAll', async () => {
+    const catsArray = {
+      docs: [mockCat({ name: 'hello' }), mockCat({})],
+      totalDocs: 2,
+      limit: 10,
+      page: 1,
+      totalPages: 1,
+    };
+    jest
+      .spyOn(model, 'paginate')
+      .mockImplementationOnce(() => Promise.resolve(catsArray as any));
+    const cats = await service.findAll({ page: 1, limit: 10 });
+    expect(cats.docs[0].name).toEqual('hello');
   });
 
-  it('should insert a new cat', async () => {
-    jest.spyOn(model, 'create').mockImplementationOnce(() =>
-      Promise.resolve({
-        name: 'Cat #1',
-        breed: 'Breed #1',
-        age: 4,
-      } as any),
-    );
-    const newCat = await service.create({
-      is_kitten: false,
-      name: 'Cat #1',
-      breed: 'Breed #1',
-      age: 4,
-    });
-    expect(newCat).toEqual(mockCat);
+  it('create', async () => {
+    const newCat = await service.create(mockCat({}));
+    expect(newCat.age).toEqual(mockCat({}).age);
+  });
+
+  it('findById', async () => {
+    const cats = await service.findById(new Types.ObjectId().toString());
+    expect(cats.age).toEqual(mockCat({}).age);
+    expect(cats.name).toEqual(mockCat({}).name);
+    expect(cats.breed).toEqual(mockCat({}).breed);
   });
 });
