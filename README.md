@@ -54,11 +54,11 @@ $ npm run test:cov
 
 ### Http Request
 
-- [x] DTO Template
-- [x] login auth demo
-- [x] Request params validation/transform
-- [x] Response unified return structure
-- [x] Response unified return status code/custom status code
+- [x] dto Template
+- [x] token auth guard demo
+- [x] request params validation/transform
+- [x] response unified return structure
+- [x] response unified return status code/custom status code
 - [x] external request encapsulation, support log saving, proxy service, etc.
 - [x] stream response demo
 
