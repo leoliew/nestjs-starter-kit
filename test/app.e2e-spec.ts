@@ -24,4 +24,16 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('{"data":"ok","code":0,"message":"success"}');
   });
+
+  it('/ (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/cats/create')
+      .send({
+        name: 'Custard',
+        age: 1,
+        breed: 'Persian',
+        is_kitten: true,
+      })
+      .expect(200);
+  });
 });

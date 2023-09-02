@@ -3,10 +3,9 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpException,
   Logger,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Constant, DateUtils } from '../../lib';
@@ -105,13 +104,12 @@ export class LoggingInterceptor implements NestInterceptor {
       }),
 
       catchError((error) => {
-        let resp_code = Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE;
+        const resp_code = Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE;
         const tapRequest = context.switchToHttp().getRequest();
         const user_id =
           tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
         const response_time = Date.now();
         const resp_msg = _.get(error, 'message', 'none');
-        const response = { code: resp_code, message: resp_msg };
         const log = {
           ...format,
           response_time: DateUtils.getCurrentTime(response_time),
