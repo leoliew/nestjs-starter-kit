@@ -1,4 +1,4 @@
-FROM node:18.17.0-alpine as builder
+FROM node:18.17.1-alpine as builder
 
 ENV NODE_ENV build
 
@@ -13,9 +13,9 @@ COPY --chown=node:node . .
 RUN npm run build \
     && npm prune --production
 
-# Docker image cache is used for the following stage
+# ---
 
-FROM node:18.17.0-alpine
+FROM node:18.17.1-alpine
 
 USER node
 WORKDIR /home/node

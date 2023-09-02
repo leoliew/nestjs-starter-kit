@@ -20,22 +20,22 @@ const exceptionMapping: ExceptionMapping = {
   AppException: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
     code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
-    logMessage: '业务逻辑错误',
+    logMessage: 'business logic error AppException',
   },
   BadRequestException: {
     status: HttpStatus.BAD_REQUEST,
     code: Constant.CUSTOM_RESPONSE_CODE.BAD_REQUEST,
-    logMessage: '请求参数错误 HttpException',
+    logMessage: 'request parameter error HttpException',
   },
   UnauthorizedException: {
     status: HttpStatus.UNAUTHORIZED,
     code: Constant.CUSTOM_RESPONSE_CODE.UNAUTHORIZED,
-    logMessage: '请求鉴权错误 HttpException',
+    logMessage: 'request authentication error HttpException',
   },
   HttpException: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
     code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
-    logMessage: '系统内部错误 HttpException',
+    logMessage: 'system internal error HttpException',
   },
 };
 
@@ -50,14 +50,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const mapping = exceptionMapping[exceptionType];
 
     if (mapping) {
-      Logger.error(`${mapping.logMessage} + ${exception.message}`);
+      Logger.error(`${mapping.logMessage}: + ${exception.message}`);
       response.status(mapping.status);
       response.send({
         code: mapping.code,
         message: exception.message,
       });
     } else {
-      Logger.error(`系统内部错误 + ${exception}`);
+      Logger.error(`system internal error: + ${exception}`);
       response.status(
         _.get(exception, 'status', HttpStatus.SERVICE_UNAVAILABLE),
       );

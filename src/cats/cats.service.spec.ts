@@ -1,84 +1,64 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
+import { PaginateModel } from 'mongoose';
 import { CatsService } from './cats.service';
-import { Cats } from './schemas/cats.schema';
-import { getModelToken } from '@nestjs/mongoose';
+import { Cats, CatsSchema } from './schemas/cats.schema';
+import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { Constant } from '../lib';
-
-// TODO: fix unit test
-const mockCat = {
-  name: 'Cat #1',
-  breed: 'Breed #1',
-  age: 4,
-};
-
-const catsArray = [
-  {
-    name: 'Cat #1',
-    breed: 'Breed #1',
-    age: 4,
-  },
-  {
-    name: 'Cat #2',
-    breed: 'Breed #2',
-    age: 2,
-  },
-];
+import { mockModel } from '../../test/test-helper';
+import { DatabaseModule } from '../database/database.module';
 
 describe('CatService', () => {
   let service: CatsService;
-  let model: Model<Cats>;
+  let catModel: PaginateModel<Cats>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CatsService,
-        {
-          provide: getModelToken('Cats', Constant.MONGODB.MAIN),
-          useValue: {
-            new: jest.fn().mockResolvedValue(mockCat),
-            constructor: jest.fn().mockResolvedValue(mockCat),
-            find: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-            exec: jest.fn(),
-          },
-        },
+      imports: [
+        DatabaseModule,
+        MongooseModule.forFeature(
+          [{ name: Cats.name, schema: CatsSchema }],
+          Constant.MONGODB.MAIN,
+        ),
       ],
+      providers: [CatsService],
     }).compile();
-    console.log(getModelToken('Cats', Constant.MONGODB.MAIN));
     service = module.get(CatsService);
-    model = module.get<Model<Cats>>(
+    catModel = module.get<PaginateModel<Cats>>(
       getModelToken('Cats', Constant.MONGODB.MAIN),
     );
   });
 
-  it('should be defined', () => {
+  it('defined', async () => {
     expect(service).toBeDefined();
   });
 
-  it('should return all cats', async () => {
-    jest.spyOn(model, 'find').mockReturnValue({
-      exec: jest.fn().mockResolvedValueOnce(catsArray),
-    } as any);
-    const cats = await service.findAll();
-    expect(cats).toEqual(catsArray);
+  it('findAll()', async () => {
+    const insertCats = mockModel.mockCat({});
+    await catModel.create(insertCats);
+    const cats = await service.findAll({ page: 1, limit: 10 });
+    console.log(cats);
+    expect(cats.docs[0].name).toEqual(insertCats.name);
   });
 
-  it('should insert a new cat', async () => {
-    jest.spyOn(model, 'create').mockImplementationOnce(() =>
-      Promise.resolve({
-        name: 'Cat #1',
-        breed: 'Breed #1',
-        age: 4,
-      } as any),
-    );
+  it('create()', async () => {
+    const insertCat = mockModel.mockCat({});
     const newCat = await service.create({
-      is_kitten: false,
-      name: 'Cat #1',
-      breed: 'Breed #1',
-      age: 4,
+      name: insertCat.name,
+      age: insertCat.age,
+      breed: insertCat.breed,
+      is_kitten: insertCat.is_kitten,
     });
-    expect(newCat).toEqual(mockCat);
+    expect(newCat.name).toEqual(insertCat.name);
+    expect(newCat.age).toEqual(insertCat.age);
+    expect(newCat.breed).toEqual(insertCat.breed);
+    expect(newCat.is_kitten).toEqual(insertCat.is_kitten);
+  });
+
+  it('findById()', async () => {
+    const insertedCat = await catModel.create(
+      mockModel.mockCat({ name: 'findById' }),
+    );
+    const cats = await service.findById(insertedCat.id);
+    expect(cats.name).toEqual('findById');
   });
 });

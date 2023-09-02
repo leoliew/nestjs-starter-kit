@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+// when e2e test is completed, stop the mongodb connection
+import { mockModel } from './test-helper';
 
 describe('AppController (e2e)', () => {
+  console.log(mockModel.mockCat({}));
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -17,8 +20,20 @@ describe('AppController (e2e)', () => {
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/common/healthCheck')
       .expect(200)
-      .expect('Hello World!');
+      .expect('{"data":"ok","code":0,"message":"success"}');
+  });
+
+  it('/ (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/cats/create')
+      .send({
+        name: 'Custard',
+        age: 1,
+        breed: 'Persian',
+        is_kitten: true,
+      })
+      .expect(200);
   });
 });

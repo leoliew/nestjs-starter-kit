@@ -5,7 +5,7 @@ import { CatsService } from './cats.service';
 
 describe('CatsController', () => {
   let controller: CatsController;
-  let service: CatsService;
+  // let service: CatsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +42,7 @@ describe('CatsController', () => {
     }).compile();
 
     controller = module.get(CatsController);
-    service = module.get(CatsService);
+    // service = module.get(CatsService);
   });
 
   it('should be defined', () => {
@@ -58,7 +58,7 @@ describe('CatsController', () => {
         is_kitten: false,
       };
 
-      expect(controller.create(createCatDto)).resolves.toEqual({
+      await expect(controller.create(createCatDto)).resolves.toEqual({
         _id: '1',
         ...createCatDto,
       });
@@ -67,7 +67,7 @@ describe('CatsController', () => {
 
   describe('findAll()', () => {
     it('should get an array of cats', () => {
-      expect(controller.findAll()).resolves.toEqual([
+      expect(controller.findAll({ page: 1, limit: 10 })).resolves.toEqual([
         {
           name: 'Cat #1',
           breed: 'Bread #1',

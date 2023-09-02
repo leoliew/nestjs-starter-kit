@@ -1,15 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { ValidationPipe } from './common/validation/validation.pipe';
 import * as basicAuth from 'express-basic-auth';
 import * as config from 'config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, RequestMethod } from '@nestjs/common';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
+  const port = config.get('port');
   const app = await NestFactory.create(AppModule, {
     logger: ['verbose'],
   });
@@ -23,7 +20,7 @@ async function bootstrap() {
 
   // swagger 文档设置
   app.use(
-    ['/api/docs', '/docs-json'],
+    ['/api/docs', '/api/docs-json'],
     basicAuth({
       challenge: true,
       users: {
@@ -51,13 +48,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/api/docs', app, document);
 
-  // 错误处理和返回值format
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalInterceptors(new LoggingInterceptor());
-  app.useGlobalPipes(new ValidationPipe());
-
-  await app.listen(3000);
+  await app.listen(port);
   Logger.log(
     `Application(${process.env.NODE_ENV}) is running on: ${await app.getUrl()}`,
   );

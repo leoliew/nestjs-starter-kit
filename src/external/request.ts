@@ -2,16 +2,18 @@ import * as _ from 'lodash';
 import * as request from 'superagent';
 import * as withProxy from 'superagent-proxy';
 import { Inject, Injectable } from '@nestjs/common';
-import { ProxyLogs, ProxyLogStatus } from './schemas/proxy-logs.schema';
+import { RequestLogs, RequestLogStatus } from './schemas/request-logs.schema';
 import DateUtils from '../lib/date-utils';
 import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Constant } from '../lib';
 
 withProxy(request);
 
 @Injectable()
 export class Request {
-  @Inject('ProxyLogsModel')
-  private readonly proxyLogsModel: Model<ProxyLogs>;
+  @InjectModel('RequestLogs', Constant.MONGODB.LOGS)
+  private readonly requestLogs: Model<RequestLogs>;
 
   protected name;
 
@@ -32,7 +34,7 @@ export class Request {
       query,
       headers: options.header,
       body,
-      status: ProxyLogStatus.PENDING,
+      status: RequestLogStatus.PENDING,
     };
     let res = null;
     let response = null;
@@ -50,7 +52,7 @@ export class Request {
       }
       res = await agent;
       response = JSON.parse(res.text);
-      proxyLog.status = ProxyLogStatus.FINISH;
+      proxyLog.status = RequestLogStatus.FINISH;
       proxyLog['response'] = response;
     } catch (err) {
       response = {
@@ -58,7 +60,7 @@ export class Request {
         status: err.status,
         body: _.get(err, 'response.body'),
       };
-      proxyLog.status = ProxyLogStatus.ERROR;
+      proxyLog.status = RequestLogStatus.ERROR;
       proxyLog['response'] = response;
     }
     // 保存 proxy log 数据
@@ -70,7 +72,7 @@ export class Request {
     );
     res['useTime'] = proxyLog['useTime'];
     if (!skipLog) {
-      await this.proxyLogsModel.create(proxyLog);
+      await this.requestLogs.create(proxyLog);
     }
     return response;
   }

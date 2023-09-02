@@ -15,18 +15,18 @@ interface Response<T> {
   message: string;
 }
 
-export class NotWarpInterceptor<T>
-  implements NestInterceptor<T, Response<T> | T>
-{
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<T>,
-  ): Observable<Response<T> | T> {
-    const request = context.switchToHttp().getRequest();
-    request.warp = false;
-    return next.handle().pipe(map((data) => data));
-  }
-}
+// export class NotWarpInterceptor<T>
+//   implements NestInterceptor<T, Response<T> | T>
+// {
+//   intercept(
+//     context: ExecutionContext,
+//     next: CallHandler<T>,
+//   ): Observable<Response<T> | T> {
+//     const request = context.switchToHttp().getRequest();
+//     request.warp = false;
+//     return next.handle().pipe(map((data) => data));
+//   }
+// }
 
 @Injectable()
 export class TransformInterceptor<T>

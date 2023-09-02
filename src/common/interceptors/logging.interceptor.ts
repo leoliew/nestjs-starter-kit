@@ -3,38 +3,34 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  HttpException,
   Logger,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { Types } from 'mongoose';
 import * as _ from 'lodash';
-import { DateUtils } from '../../lib';
+import { Constant, DateUtils } from '../../lib';
 import { AppException } from '../exceptions/app.exception';
+import { Types, Model } from 'mongoose';
+import { ClientLogs } from '../schemas/client-logs.schema';
+import { InjectModel } from '@nestjs/mongoose';
 
 const sortKeys = [
-  'requestId',
-  'operatorId',
+  'request_id',
+  'user_id',
   'type',
-  'requestTime',
-  'responseTime',
-  'retCode',
-  'retMsg',
-  'useTime',
+  'request_time',
+  'response_time',
+  'resp_code',
+  'resp_msg',
+  'resp_msg',
+  'use_time',
   'params',
   'body',
   'query',
-  'httpMethod',
+  'http_method',
   'url',
-  'app',
-  'version',
-  'channel',
   'response',
-  'errorStack',
-  'agentName',
-  'deviceId',
-  'deviceModel',
+  'error_stack',
   'ip',
 ];
 
@@ -50,96 +46,86 @@ const formatRequestFileLog = function (log: any) {
   return values.join('|#|');
 };
 
+const excludePatterns = [/dashboard/, /card/, /health/];
+
+/**
+ * logs middleware
+ */
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
+  @InjectModel('ClientLogs', Constant.MONGODB.LOGS)
+  private readonly clientLogs: Model<ClientLogs>;
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const ip = request.headers['ip'] || 'none';
-    const deviceId = request.headers['deviceid'] || 'none';
-    const deviceModel = request.headers['devicemodel'] || 'none';
-    const requestId =
-      request.headers['x-request-id'] || new Types.ObjectId().toString();
-    const requestTime = Date.now();
-    const version = request.headers['version'] || 'none';
+    const ip = _.get(request.headers, 'x-forwarded-for') || 'none';
+    const request_id = request.headers['x-request-id'] || new Types.ObjectId();
+    const request_time = Date.now();
     const url = request.url;
-    const requestParams = _.cloneDeep({
-      ...request.query,
-      ...request.body,
-      ...request.params,
-    });
-    const body = _.cloneDeep(request.body);
-    const params = _.cloneDeep(request.query);
+    const body = _.cloneDeep(request.body) || {};
+    const params = _.cloneDeep(request.params) || {};
+    const query = _.cloneDeep(request.query) || {};
     const format = {
       type: 'in',
-      params: requestParams,
-      version,
-      requestId,
+      params,
+      body,
+      query,
+      request_id,
       url,
-      deviceId,
-      deviceModel,
       ip,
-      httpMethod: request.method,
-      requestTime: DateUtils.getCurrentTime(requestTime),
+      http_method: request.method,
+      request_time: DateUtils.getCurrentTime(request_time),
     };
+
     return next.handle().pipe(
       tap((data) => {
         const tapRequest = context.switchToHttp().getRequest();
-        const operatorId = tapRequest.body['operatorId'] || 'none';
-        const agentName = tapRequest.headers['agentName'] || 'none';
-        const responseTime = Date.now();
-        const retCode = _.get(data, 'code', '0');
-        const retMsg = _.get(data, 'message', 'success');
+        const user_id =
+          tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
+        const response_time = Date.now();
+        const resp_code = _.get(data, 'code', '0');
+        const resp_msg = _.get(data, 'message', 'success');
         const response = data;
         const log = {
           ...format,
-          responseTime: DateUtils.getCurrentTime(responseTime),
-          retCode,
-          retMsg,
+          response_time: DateUtils.getCurrentTime(response_time),
+          resp_code,
+          resp_msg,
           response,
-          body,
-          params,
-          operatorId,
-          agentName,
-          useTime: responseTime - requestTime,
+          user_id,
+          use_time: DateUtils.diff(request_time, response_time, 'ms'),
+          error_stack: '',
         } as any;
         const fileLog = formatRequestFileLog(log);
-        if (!/health/.exec(url)) {
-          // logger.info(fileLog)
+        if (!excludePatterns.some((pattern) => pattern.test(url))) {
           Logger.log(fileLog);
+          this.clientLogs.create(log).then().catch();
         }
       }),
+
       catchError((error) => {
-        let retCode = 500;
-        if (error instanceof AppException) {
-          retCode = -1;
-        } else if (error instanceof HttpException) {
-          retCode = error.getStatus();
-        }
+        const resp_code = Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE;
         const tapRequest = context.switchToHttp().getRequest();
-        const operatorId = tapRequest.body['operatorId'] || 'none';
-        const agentName = tapRequest.headers['agentName'] || 'none';
-        const responseTime = Date.now();
-        const retMsg = _.get(error, 'message', 'none');
+        const user_id =
+          tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
+        const response_time = Date.now();
+        const resp_msg = _.get(error, 'message', 'none');
         const log = {
           ...format,
-          responseTime: DateUtils.getCurrentTime(responseTime),
-          retCode,
-          retMsg,
-          response: { code: retCode, message: retMsg },
-          body,
-          params,
-          useTime: responseTime - requestTime,
-          errorStack: error.stack,
-          operatorId,
-          agentName,
+          response_time: DateUtils.getCurrentTime(response_time),
+          resp_code,
+          resp_msg,
+          response: { code: resp_code, message: resp_msg },
+          user_id,
+          use_time: DateUtils.diff(request_time, response_time, 'ms'),
+          error_stack: error.stack,
         } as any;
         const fileLog = formatRequestFileLog(log);
-        if (!/health/.exec(url)) {
-          // logger.info(fileLog)
-          Logger.log(fileLog);
-          Logger.log(fileLog);
+        if (!excludePatterns.some((pattern) => pattern.test(url))) {
+          Logger.error(fileLog);
+          this.clientLogs.create(log).then().catch();
         }
-        return throwError(error);
+        throw new AppException(error);
       }),
     );
   }

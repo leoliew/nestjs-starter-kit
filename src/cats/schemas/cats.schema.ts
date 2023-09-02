@@ -1,17 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
-import * as mongooseEncryption from 'mongoose-encryption';
 import * as mongoosePaginate from 'mongoose-paginate-v2';
-import { timestamp } from 'rxjs';
+import { Document } from 'mongoose';
 import { Bcrypt } from '../../lib';
-
-export type CatsDocument = HydratedDocument<Cats>;
 
 @Schema({
   collection: 'cats',
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
 })
-export class Cats {
+export class Cats extends Document {
   @Prop({
     required: true,
     index: true,
@@ -26,11 +22,8 @@ export class Cats {
   @Prop()
   breed: string;
 
-  @Prop({ type: timestamp })
-  timestamps: {
-    createdAt: 'created_at';
-    updatedAt: 'updated_at';
-  };
+  @Prop()
+  is_kitten: boolean;
 }
 
 function encrypt(value: string) {
