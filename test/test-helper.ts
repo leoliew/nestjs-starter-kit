@@ -1,6 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import { Cats } from '../src/cats/schemas/cats.schema';
 beforeEach(async () => {
+  jest.clearAllMocks();
   for (const conn of mongoose.connections) {
     if (conn.db) {
       await conn.db.dropDatabase();
