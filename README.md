@@ -54,13 +54,14 @@ $ npm run test:cov
 
 ### Http Request
 
-- [x] dto Template
-- [x] token auth guard demo
-- [x] request params validation/transform
-- [x] response unified return structure
-- [x] response unified return status code/custom status code
-- [x] external request encapsulation, support log saving, proxy service, etc.
-- [x] stream response demo
+- [x] dto template
+- [x] token auth guard demo [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/common/guards/token.guard.ts)
+- [x] request parameter validation [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/common/validation/validation.pipe.ts)
+- [x] response unified [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/common/interceptors/transform.interceptor.ts#L47)
+- [x] response unified custom status code [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/lib/constant.ts#L20)
+- [x] response unified return status code/custom status code [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/docs/ResponseReference.md) 
+- [x] external request encapsulation, support log saving, proxy service, etc. [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/external/request.ts)
+- [x] stream response demo [link](https://github.com/leoliew/nestjs-starter-kit/blob/main/src/cats/cats.controller.ts#L97)
 
 ### Database
 
