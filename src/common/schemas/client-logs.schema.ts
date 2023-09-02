@@ -74,6 +74,9 @@ export class ClientLogs extends Document {
   @Prop({ type: Object, comment: 'Response result' })
   response: Record<string, any>;
 
+  @Prop({ type: String, comment: 'ip address' })
+  ip: string;
+
   @Prop({ type: String, comment: 'Error stack trace' })
   error_stack: string;
 

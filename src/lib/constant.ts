@@ -31,6 +31,7 @@ const Constant = {
     SUCCESS: 'success',
     ERROR: 'unknown error!',
     UNAUTHORIZED: 'access denied',
+    BAD_REQUEST: 'bad request',
   },
 };
 

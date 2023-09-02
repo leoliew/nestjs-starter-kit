@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as request from 'superagent';
 import * as withProxy from 'superagent-proxy';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RequestLogs, RequestLogStatus } from './schemas/request-logs.schema';
 import DateUtils from '../lib/date-utils';
 import { Model } from 'mongoose';
