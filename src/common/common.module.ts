@@ -8,7 +8,9 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ValidationPipe } from './validation/validation.pipe';
+import { CommonController } from './controllers/common.controller';
 @Module({
+  controllers: [CommonController],
   imports: [
     MongooseModule.forFeature(
       [{ name: ClientLogs.name, schema: ClientLogsSchema }],

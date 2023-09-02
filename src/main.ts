@@ -20,7 +20,7 @@ async function bootstrap() {
 
   // swagger 文档设置
   app.use(
-    ['/api/docs', '/docs-json'],
+    ['/api/docs', '/api/docs-json'],
     basicAuth({
       challenge: true,
       users: {

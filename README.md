@@ -83,7 +83,13 @@ $ npm run test:cov
 - [x] support multiple environment configuration files
 - [x] use .nvmrc to manage node version
 
+### Test
+- [x] support e2e test
+- [x] support unit test with using test mongodb
+- [ ] support unit test with using [mongodb memory server](https://github.com/nodkz/mongodb-memory-server)
+
 ### Release
 
 - [x] support [railway](https://railway.app/) deployment
 - [x] support docker build by Makefile
+- [x] http health check for kubernetes deployment

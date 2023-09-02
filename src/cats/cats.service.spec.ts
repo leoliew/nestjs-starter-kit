@@ -32,7 +32,7 @@ describe('CatService', () => {
     expect(service).toBeDefined();
   });
 
-  it('findAll', async () => {
+  it('findAll()', async () => {
     const insertCats = mockModel.mockCat({});
     await catModel.create(insertCats);
     const cats = await service.findAll({ page: 1, limit: 10 });
@@ -40,7 +40,7 @@ describe('CatService', () => {
     expect(cats.docs[0].name).toEqual(insertCats.name);
   });
 
-  it('create', async () => {
+  it('create()', async () => {
     const insertCat = mockModel.mockCat({});
     const newCat = await service.create({
       name: insertCat.name,
@@ -54,7 +54,7 @@ describe('CatService', () => {
     expect(newCat.is_kitten).toEqual(insertCat.is_kitten);
   });
 
-  it('findById', async () => {
+  it('findById()', async () => {
     const insertedCat = await catModel.create(
       mockModel.mockCat({ name: 'findById' }),
     );

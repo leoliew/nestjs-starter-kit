@@ -58,7 +58,7 @@ describe('CatsController', () => {
         is_kitten: false,
       };
 
-      expect(controller.create(createCatDto)).resolves.toEqual({
+      await expect(controller.create(createCatDto)).resolves.toEqual({
         _id: '1',
         ...createCatDto,
       });
