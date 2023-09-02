@@ -22,7 +22,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/common/healthCheck')
       .expect(200)
-      .expect('{"data":"ok","code":0,"message":"success"}');
+      .expect('ok');
   });
 
   it('/ (POST)', () => {

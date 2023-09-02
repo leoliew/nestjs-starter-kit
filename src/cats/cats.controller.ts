@@ -4,8 +4,10 @@ import {
   Post,
   Body,
   Query,
-  UseInterceptors,
   Res,
+  UseGuards,
+  Req,
+  Logger,
 } from '@nestjs/common';
 import { CreateCatDto, UpdateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
@@ -23,7 +25,7 @@ import {
   ReqPaginateDto,
   RespPaginateDto,
 } from '../common/dto/crud.dto';
-import { AuthInterceptor } from '../common/interceptors/auth.interceptor';
+import { TokenGuard } from '../common/guards/token.guard';
 
 @ApiTags('cats')
 @Controller('cats')
@@ -74,7 +76,7 @@ export class CatsController {
     return this.catsService.updateOne(updateCatDto);
   }
 
-  @UseInterceptors(AuthInterceptor)
+  @UseGuards(TokenGuard)
   @ApiBearerAuth('token')
   @Post('deleteById')
   @ApiResponse({
@@ -83,7 +85,12 @@ export class CatsController {
     type: CreateCatDto,
   })
   @ApiOperation({ summary: 'delete cat by id' })
-  async deleteById(@Body() reqByIdDto: ReqByIdDto): Promise<Cats> {
+  async deleteById(
+    @Req() req: any,
+    @Body() reqByIdDto: ReqByIdDto,
+  ): Promise<Cats> {
+    // should get user info from request context
+    Logger.log('user', req.user);
     return this.catsService.deleteById(reqByIdDto._id);
   }
 

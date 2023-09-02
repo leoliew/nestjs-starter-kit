@@ -1,12 +1,15 @@
 import mongoose, { Types } from 'mongoose';
 import { Cats } from '../src/cats/schemas/cats.schema';
-beforeEach(async () => {
-  jest.clearAllMocks();
+
+// we need to drop database after each test,
+// and after each can get the database connection
+afterEach(async () => {
   for (const conn of mongoose.connections) {
     if (conn.db) {
       await conn.db.dropDatabase();
     }
   }
+  jest.clearAllMocks();
 });
 
 afterAll(async () => {
