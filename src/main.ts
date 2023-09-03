@@ -11,14 +11,14 @@ async function bootstrap() {
     logger: ['verbose'],
   });
 
-  // API 默认前缀
+  // API default prefix
   app.setGlobalPrefix('/api/v1/', {
     exclude: [{ path: 'health', method: RequestMethod.GET }],
   });
-  // 跨域设置
+  // allow cors
   app.enableCors();
 
-  // swagger 文档设置
+  // swagger document setup
   app.use(
     ['/api/docs', '/api/docs-json'],
     basicAuth({
