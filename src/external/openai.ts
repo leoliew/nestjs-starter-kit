@@ -4,7 +4,7 @@ import { Constant } from '../lib';
 export class Openai extends Request {
   private readonly baseUrl: string;
   private readonly apiKey: string;
-  private readonly needProxy: string;
+  private readonly needProxy: boolean;
   private readonly proxy: string;
 
   constructor() {

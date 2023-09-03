@@ -1,16 +1,24 @@
 import * as config from 'config';
 
+import {
+  AssemblyConfig,
+  OpenAIConfig,
+} from '../common/interfaces/config.interface';
+
+const assemblyConfig = config.get('assembly') as AssemblyConfig;
+const openAIConfig = config.get('openai') as OpenAIConfig;
+
 const Constant = {
   ASSEMBLY: {
-    HOST: config.get('assembly.host'),
-    API_KEY: config.get('assembly.apiKey'),
+    HOST: assemblyConfig.host,
+    API_KEY: assemblyConfig.apiKey,
     TOKEN_EXPIRE: 3600,
   },
   OPENAI: {
-    HOST: config.get('openai.host'),
-    API_KEY: config.get('openai.apiKey'),
-    NEED_PROXY: config.get('openai.needProxy'),
-    PROXY: config.get('openai.proxy'),
+    HOST: openAIConfig.host,
+    API_KEY: openAIConfig.apiKey,
+    NEED_PROXY: openAIConfig.needProxy,
+    PROXY: openAIConfig.proxy,
   },
   MONGODB: {
     MAIN: 'main',

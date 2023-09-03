@@ -1,9 +1,8 @@
 import * as crypto from 'crypto';
 import * as config from 'config';
+import { CryptoConfig } from '../common/interfaces/config.interface';
 
-const algorithm = config.get('crypto').algorithm;
-const key = config.get('crypto').key;
-const iv = config.get('crypto').iv;
+const cryptoConfig = config.get('crypto') as CryptoConfig;
 
 export default class Bcrypt {
   /**
@@ -12,7 +11,11 @@ export default class Bcrypt {
    */
   static decrypt(originData: string) {
     try {
-      const decipher = crypto.createDecipheriv(algorithm, key, iv);
+      const decipher = crypto.createDecipheriv(
+        cryptoConfig.algorithm,
+        cryptoConfig.key,
+        cryptoConfig.iv,
+      );
       let decryptData = decipher.update(originData, 'base64', 'utf8');
       decryptData += decipher.final('utf8');
       return decryptData;
@@ -28,7 +31,11 @@ export default class Bcrypt {
    * @param originData
    */
   static encrypt(originData: string) {
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const cipher = crypto.createCipheriv(
+      cryptoConfig.algorithm,
+      cryptoConfig.key,
+      cryptoConfig.iv,
+    );
     let encryptData = cipher.update(originData, 'utf8', 'base64');
     encryptData += cipher.final('base64');
     return encryptData;
