@@ -58,7 +58,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const ip = _.get(request.headers, 'x-forwarded-for') || 'none';
+    const ip = request.ip || 'none';
     const request_id = request.headers['x-request-id'] || new Types.ObjectId();
     const request_time = Date.now();
     const url = request.url;
