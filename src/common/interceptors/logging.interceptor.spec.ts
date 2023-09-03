@@ -99,7 +99,7 @@ describe('Logging Interceptor', () => {
       expect(clientLogs.query).toEqual({ page: 1 });
       expect(clientLogs.params).toEqual({ id: '1' });
       expect(clientLogs.url).toEqual('/cats/create');
-      expect(clientLogs.ip).toEqual('127.0.0.1');
+      expect(clientLogs.ip).toEqual('none');
       expect(clientLogs.http_method).toEqual('POST');
       expect(clientLogs.user_id).toEqual('none');
       expect(clientLogs.response).toEqual(body);
