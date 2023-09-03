@@ -23,11 +23,16 @@ export class ValidationPipe implements PipeTransform {
     return object;
   }
 
-  private static toValidate(metaType): boolean {
+  private static toValidate(metaType: any): boolean {
     const types = [String, Boolean, Number, Array, Object];
     return !types.includes(metaType);
   }
 
+  /**
+   * get the first message from the error object
+   * @param error
+   * @private
+   */
   private getMessage(error: ValidationError) {
     let message: string;
     if (_.isEmpty(error.constraints)) {

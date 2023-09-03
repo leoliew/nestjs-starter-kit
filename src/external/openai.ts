@@ -1,7 +1,7 @@
 import { Request } from './request';
 import { Constant } from '../lib';
 
-export class OpenAIProxy extends Request {
+export class Openai extends Request {
   private readonly baseUrl: string;
   private readonly apiKey: string;
   private readonly needProxy: string;

@@ -1,7 +1,7 @@
 import { Request } from './request';
 import { Constant } from '../lib';
 
-export class AssemblyProxy extends Request {
+export class Assembly extends Request {
   private readonly baseUrl: string;
   private readonly apiKey: string;
 

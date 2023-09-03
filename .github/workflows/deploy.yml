@@ -1,0 +1,66 @@
+name: "Deploy to GKE"
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - '*'
+
+env:
+  PROJECT_ID: nestjs
+  GAR_LOCATION: australia-southeast1
+  REPOSITORY: nestjs
+  IMAGE: nestjs-backend
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        options: --storageEngine=wiredTiger --noauth --bind_ip 127.0.0.1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.1
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm run test
+
+
+  login-build-push:
+    name: Docker login, build, and push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 'Docker build'
+        run: |-
+          docker build -t "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:latest" .
+
+# push to gcr
+#      - id: 'auth'
+#        name: 'Authenticate to Google Cloud'
+#        uses: 'google-github-actions/auth@v1'
+#        with:
+#          credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+#
+#      - name: 'Docker push'
+#        run: |-
+#          gcloud auth configure-docker $GAR_LOCATION-docker.pkg.dev
+#          docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:latest"
+
