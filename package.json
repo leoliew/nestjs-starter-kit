@@ -86,6 +86,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "testTimeout": 10000
+    "testTimeout": 10000,
+    "setupFilesAfterEnv": [
+      "../test/test-helper.ts"
+    ]
   }
 }
