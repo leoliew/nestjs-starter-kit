@@ -42,7 +42,7 @@ describe('Logging Interceptor', () => {
         getRequest: jest.fn(() => ({
           warp: true,
           headers: {
-            'x-forwarded-for': '127.0.0.1',
+            'x-forwarded-for': '127.0.0.1, 172.71.214.238, 34.111.165.210',
           },
           query: {
             page: 1,
@@ -79,6 +79,7 @@ describe('Logging Interceptor', () => {
       const result = await lastValueFrom(resultObservable);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const clientLogs = await clientLogsModel.findOne();
+      console.log('clientLogs', clientLogs);
       expect(result).toEqual(body);
       expect(clientLogs).toBeDefined();
       expect(clientLogs).toHaveProperty('request_id');
@@ -99,7 +100,7 @@ describe('Logging Interceptor', () => {
       expect(clientLogs.query).toEqual({ page: 1 });
       expect(clientLogs.params).toEqual({ id: '1' });
       expect(clientLogs.url).toEqual('/cats/create');
-      expect(clientLogs.ip).toEqual('none');
+      expect(clientLogs.ip).toEqual('127.0.0.1');
       expect(clientLogs.http_method).toEqual('POST');
       expect(clientLogs.user_id).toEqual('none');
       expect(clientLogs.response).toEqual(body);
