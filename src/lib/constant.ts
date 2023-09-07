@@ -26,16 +26,6 @@ const Constant = {
     LOGS: 'logs',
   },
 
-  // CUSTOM_RESPONSE_CODE: {
-  //   SUCCESS: 0,
-  //   ERROR: -1,
-  //   NOT_FOUND: -2,
-  //   UNAUTHORIZED: -3,
-  //   FORBIDDEN: -4,
-  //   BAD_REQUEST: -5,
-  //   SERVICE_UNAVAILABLE: -6,
-  // },
-
   CUSTOM_RESPONSE_CODE: {
     [HttpStatus.OK]: 0,
     [HttpStatus.INTERNAL_SERVER_ERROR]: -1,
