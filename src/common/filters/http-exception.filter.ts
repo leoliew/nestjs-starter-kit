@@ -17,7 +17,7 @@ interface ExceptionMapping {
 }
 
 const exceptionMapping: ExceptionMapping = {
-  AppException: {
+  InternalServerErrorException: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
     code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
     logMessage: 'business logic error AppException',
