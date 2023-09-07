@@ -4,6 +4,7 @@ import {
   AssemblyConfig,
   OpenAIConfig,
 } from '../common/interfaces/config.interface';
+import { HttpStatus } from '@nestjs/common';
 
 const assemblyConfig = config.get('assembly') as AssemblyConfig;
 const openAIConfig = config.get('openai') as OpenAIConfig;
@@ -25,14 +26,24 @@ const Constant = {
     LOGS: 'logs',
   },
 
+  // CUSTOM_RESPONSE_CODE: {
+  //   SUCCESS: 0,
+  //   ERROR: -1,
+  //   NOT_FOUND: -2,
+  //   UNAUTHORIZED: -3,
+  //   FORBIDDEN: -4,
+  //   BAD_REQUEST: -5,
+  //   SERVICE_UNAVAILABLE: -6,
+  // },
+
   CUSTOM_RESPONSE_CODE: {
-    SUCCESS: 0,
-    ERROR: -1,
-    NOT_FOUND: -2,
-    UNAUTHORIZED: -3,
-    FORBIDDEN: -4,
-    BAD_REQUEST: -5,
-    SERVICE_UNAVAILABLE: -6,
+    [HttpStatus.OK]: 0,
+    [HttpStatus.INTERNAL_SERVER_ERROR]: -1,
+    [HttpStatus.NOT_FOUND]: -2,
+    [HttpStatus.UNAUTHORIZED]: -3,
+    [HttpStatus.FORBIDDEN]: -4,
+    [HttpStatus.BAD_REQUEST]: -5,
+    [HttpStatus.SERVICE_UNAVAILABLE]: -6,
   },
 
   RESPONSE_MESSAGE: {

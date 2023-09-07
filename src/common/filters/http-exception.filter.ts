@@ -19,22 +19,22 @@ interface ExceptionMapping {
 const exceptionMapping: ExceptionMapping = {
   AppException: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
-    code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
+    code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
     logMessage: 'business logic error AppException',
   },
   BadRequestException: {
     status: HttpStatus.BAD_REQUEST,
-    code: Constant.CUSTOM_RESPONSE_CODE.BAD_REQUEST,
+    code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.BAD_REQUEST],
     logMessage: 'request parameter error HttpException',
   },
   UnauthorizedException: {
     status: HttpStatus.UNAUTHORIZED,
-    code: Constant.CUSTOM_RESPONSE_CODE.UNAUTHORIZED,
+    code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.UNAUTHORIZED],
     logMessage: 'request authentication error HttpException',
   },
   HttpException: {
     status: HttpStatus.SERVICE_UNAVAILABLE,
-    code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
+    code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
     logMessage: 'system internal error HttpException',
   },
 };
@@ -65,7 +65,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         code: _.get(
           exception,
           'status',
-          Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
+          Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
         ),
         message: exception.message,
       });

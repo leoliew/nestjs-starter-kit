@@ -41,7 +41,7 @@ describe('HttpException Filter', () => {
       HttpStatus.SERVICE_UNAVAILABLE,
     );
     expect(responseMock.send).toHaveBeenCalledWith({
-      code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
+      code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
       message: 'AppException',
     });
   });
@@ -52,7 +52,7 @@ describe('HttpException Filter', () => {
     );
     filter.catch(exception, hostMock);
     expect(responseMock.send).toHaveBeenCalledWith({
-      code: Constant.CUSTOM_RESPONSE_CODE.BAD_REQUEST,
+      code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.BAD_REQUEST],
       message: Constant.RESPONSE_MESSAGE.BAD_REQUEST,
     });
   });
@@ -72,7 +72,7 @@ describe('HttpException Filter', () => {
       HttpStatus.SERVICE_UNAVAILABLE,
     );
     expect(responseMock.send).toHaveBeenCalledWith({
-      code: Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE,
+      code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE],
       message: 'UnknownException',
     });
   });

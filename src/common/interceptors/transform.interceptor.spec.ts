@@ -1,6 +1,6 @@
 import { lastValueFrom, of } from 'rxjs';
 import { TransformInterceptor } from './transform.interceptor';
-import { CallHandler, ExecutionContext } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Constant } from '../../lib';
 
 describe('Transform Interceptor', () => {
@@ -54,7 +54,7 @@ describe('Transform Interceptor', () => {
       );
       const result: any = await lastValueFrom(resultObservable);
       expect(result.data).toEqual(returnCat);
-      expect(result.code).toEqual(Constant.CUSTOM_RESPONSE_CODE.SUCCESS);
+      expect(result.code).toEqual(Constant.CUSTOM_RESPONSE_CODE[HttpStatus.OK]);
       expect(result.message).toEqual(Constant.RESPONSE_MESSAGE.SUCCESS);
     });
   });

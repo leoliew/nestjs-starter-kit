@@ -1,5 +1,5 @@
 import { lastValueFrom, of } from 'rxjs';
-import { CallHandler, ExecutionContext } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Constant, DateUtils } from '../../lib';
 import { LoggingInterceptor } from './logging.interceptor';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -89,7 +89,7 @@ describe('Logging Interceptor', () => {
         DateUtils.diff(clientLogs.request_time, clientLogs.response_time, 'ms'),
       );
       expect(clientLogs.resp_code).toEqual(
-        Constant.CUSTOM_RESPONSE_CODE.SUCCESS.toString(),
+        Constant.CUSTOM_RESPONSE_CODE[HttpStatus.OK].toString(),
       );
       expect(clientLogs.resp_msg).toEqual(Constant.RESPONSE_MESSAGE.SUCCESS);
       expect(clientLogs.type).toEqual(ClientLogsTypes.IN);
