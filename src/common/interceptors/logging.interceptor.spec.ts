@@ -79,7 +79,6 @@ describe('Logging Interceptor', () => {
       const result = await lastValueFrom(resultObservable);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const clientLogs = await clientLogsModel.findOne();
-      console.log('clientLogs', clientLogs);
       expect(result).toEqual(body);
       expect(clientLogs).toBeDefined();
       expect(clientLogs).toHaveProperty('request_id');
