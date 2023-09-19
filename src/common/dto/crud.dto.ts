@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class ReqByIdDto {
+export class ByIdDto {
   @ApiProperty({ required: true, default: '64b3d98a6004d4c1fd92a0ce' })
   @IsNotEmpty()
   _id: string;
 }
-export class ReqPaginateDto {
+export class PaginateDto {
   @ApiProperty({ default: 1 })
   @Type(() => Number)
   @IsNumber()
@@ -18,7 +18,7 @@ export class ReqPaginateDto {
   @IsNumber()
   limit: number;
 }
-export class RespPaginateDto {
+export class PaginateRes {
   @ApiProperty()
   totalDocs: number;
   @ApiProperty()
@@ -39,20 +39,18 @@ export class RespPaginateDto {
   nextPage: number;
 }
 
-export class MongooseUpdatedDto {
+export class UpdatedRes {
   @ApiProperty()
   acknowledged: boolean;
   @ApiProperty()
   modifiedCount: number;
-  @ApiProperty()
-  upsertedId: null;
   @ApiProperty()
   upsertedCount: number;
   @ApiProperty()
   matchedCount: number;
 }
 
-export class MongooseDeletedDto {
+export class DeletedRes {
   @ApiProperty()
   acknowledged: boolean;
   @ApiProperty()

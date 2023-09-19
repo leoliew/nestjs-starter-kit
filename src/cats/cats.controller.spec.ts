@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CatsController } from './cats.controller';
-import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
+import { CatCreateDto } from './dto/create.dto';
 
 describe('CatsController', () => {
   let controller: CatsController;
@@ -33,7 +33,7 @@ describe('CatsController', () => {
             ]),
             create: jest
               .fn()
-              .mockImplementation((createCatDto: CreateCatDto) =>
+              .mockImplementation((createCatDto: CatCreateDto) =>
                 Promise.resolve({ _id: '1', ...createCatDto }),
               ),
           },
@@ -51,7 +51,7 @@ describe('CatsController', () => {
 
   describe('create()', () => {
     it('should create a new cat', async () => {
-      const createCatDto: CreateCatDto = {
+      const createCatDto: CatCreateDto = {
         name: 'Cat #1',
         breed: 'Breed #1',
         age: 4,
