@@ -1,19 +1,20 @@
 import * as _ from 'lodash';
 import * as Moment from 'moment-timezone';
+import * as process from 'process';
 
 class DateUtil {
+  private readonly timezone: string;
   constructor() {
-    // Moment.tz.setDefault('Asia/Kolkata')
+    this.timezone = process.env.TZ || 'Australia/Perth';
   }
 
   /**
    * Get current time's Moment object with timezone
-   *
-   * @param {any} time
-   * @return {Object} the Moment object
+   * @param time
+   * @returns {Moment.Moment}
    */
-  getCurrentMoment(time?) {
-    return Moment(time);
+  getCurrentMoment(time?: any): Moment.Moment {
+    return Moment.tz(time, this.timezone);
   }
 
   /**
@@ -22,7 +23,7 @@ class DateUtil {
    * @param {any} time
    * @return {Date} current time
    */
-  getCurrentTime(time?) {
+  getCurrentTime(time?: any): Date {
     return this.getCurrentMoment(time).toDate();
   }
 
@@ -30,158 +31,264 @@ class DateUtil {
    * Get current time of type timestamp
    *
    * @param {any} time
+   * @return {number} current time
    */
-  getCurrentTimestamp(time?) {
+  getCurrentTimestamp(time?: any): number {
     return this.getCurrentMoment(time).valueOf();
   }
 
-  getCurrentSecondsStamp(time?) {
+  /**
+   * Get current time of type seconds
+   * @param time
+   * @returns {number}
+   */
+  getCurrentSecondsStamp(time?: any): number {
     return Math.floor(this.getCurrentTimestamp(time) / 1000);
   }
 
-  formatTime(time?, format?) {
+  /**
+   * Get current time of type formatted string
+   * @param time
+   * @param format
+   * @returns {string}
+   */
+  formatTime(time?: any, format?: any): string {
     return this.getCurrentMoment(time).format(format || 'YYYY-MM-DD');
   }
 
-  getTimeFromFormat(date, format?) {
+  /**
+   * Get date format string
+   * @param date
+   * @param format
+   * @returns {string}
+   */
+  getTimeFromFormat(date: Moment.MomentInput, format?: any): Moment.Moment {
     return Moment(date, format || 'YYYY-MM-DD');
   }
 
-  getTimeFromCST(date) {
-    return this.getXMinutesAgo(2.5 * 60, this.getCurrentTime(date));
-  }
-
   /**
-   * 取当天凌晨时间的时间戳
-   * @param time 当前的时间
+   * Get timestamp of the start of today
+   * @param time
    * @returns {number}
    */
-  getTodayStartTimestamp(time?) {
+  getTodayStartTimestamp(time?: any): number {
     return this.getCurrentMoment(time).startOf('day').valueOf();
   }
 
-  getTodayEndTimestamp(time?) {
+  /**
+   * Get today end timestamp
+   * @param time
+   * @returns {number}
+   */
+  getTodayEndTimestamp(time?: any): number {
     return this.getCurrentMoment(time).endOf('day').valueOf();
   }
 
-  getYestodayTime(time?) {
-    return this.getCurrentMoment(time).subtract(1, 'days');
-  }
-
-  getTomorrowTime(time?) {
-    return this.getCurrentMoment(time).add(1, 'days');
-  }
-
-  getYestodayStartTime(time?) {
-    return this.getCurrentMoment(time)
-      .subtract(1, 'days')
-      .startOf('day')
-      .toDate();
-  }
-
-  getYestodayEndTime(time?) {
-    return this.getCurrentMoment(time)
-      .subtract(1, 'days')
-      .endOf('day')
-      .toDate();
-  }
-
-  getXDaysAgoTime(days = 1, time?) {
+  /**
+   * Get x days ago time
+   * @param days
+   * @param time
+   */
+  getXDaysAgoDate(days = 1, time?: Date): Date {
     return this.getCurrentMoment(time).subtract(days, 'days').toDate();
   }
 
-  getXDaysAgoStartTime(days = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param days
+   * @param time
+   */
+  getXDaysAgoStartDate(days = 1, time?: any): Date {
     return this.getCurrentMoment(time)
       .subtract(days, 'days')
       .startOf('day')
       .toDate();
   }
 
-  getXDaysAfterStartTime(days = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param days
+   * @param time
+   */
+  getXDaysAgoEndDate(days = 1, time?: any): Date {
+    return this.getCurrentMoment(time)
+      .subtract(days, 'days')
+      .endOf('day')
+      .toDate();
+  }
+  /**
+   * Get current time of the start of today
+   * @param days
+   * @param time
+   */
+  getXDaysAfterStartDate(days = 1, time?: any): Date {
     return this.getCurrentMoment(time)
       .add(days, 'days')
       .startOf('day')
       .toDate();
   }
 
-  getXDaysAgoEndTime(days = 1, time?) {
-    return this.getCurrentMoment(time)
-      .subtract(days, 'days')
-      .endOf('day')
-      .toDate();
-  }
-
-  getXDaysAfterEndTime(days = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param days
+   * @param time
+   */
+  getXDaysAfterEndDate(days = 1, time?: any): Date {
     return this.getCurrentMoment(time).add(days, 'days').endOf('day').toDate();
   }
 
-  getXHoursAgo(hours = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param hours
+   * @param time
+   */
+  getXHoursAgoDate(hours = 1, time?: any): Date {
     return this.getCurrentMoment(time).subtract(hours, 'hours').toDate();
   }
 
-  getXHoursAfter(hours = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param hours
+   * @param time
+   */
+  getXHoursAfterDate(hours = 1, time?: any): Date {
     return this.getCurrentMoment(time).add(hours, 'hours').toDate();
   }
 
-  getXMinutesAgo(minutes = 1, time?) {
+  /**
+   * Get current time of the start of today
+   * @param minutes
+   * @param time
+   */
+  getXMinutesAgoDate(minutes = 1, time?: Date): Date {
     return this.getCurrentMoment(time).subtract(minutes, 'minutes').toDate();
   }
 
-  getXMinutesAfter(minutes = 1, time?) {
+  /**
+   * Get x minutes after date
+   * @param minutes
+   * @param time
+   */
+  getXMinutesAfterDate(minutes = 1, time?: any): Date {
     return this.getCurrentMoment(time).add(minutes, 'minutes').toDate();
   }
 
-  getXSecondsAgo(seconds = 1, time?) {
+  /**
+   * Get x seconds ago date
+   * @param seconds
+   * @param time
+   */
+  getXSecondsAgoDate(seconds = 1, time?: any): Date {
     return this.getCurrentMoment(time).subtract(seconds, 'seconds').toDate();
   }
 
-  getXSecondsAfter(seconds = 1, time?) {
+  /**
+   * Get x seconds after date
+   * @param seconds
+   * @param time
+   */
+  getXSecondsAfter(seconds = 1, time?: any): Date {
     return this.getCurrentMoment(time).add(seconds, 'seconds').toDate();
   }
 
-  getXDaysAfter(days = 1, time?) {
+  /**
+   * Get x days after date
+   * @param days
+   * @param time
+   */
+  getXDaysAfterDate(days = 1, time?: undefined): Date {
     return this.getCurrentMoment(time).add(days, 'days').endOf('days').toDate();
   }
 
-  getXDaysAfterNextDayStartTime(days = 1, time?) {
+  /**
+   * Get x days after date
+   * @param months
+   * @param time
+   */
+  getXMonthsAfterDate(months = 1, time?: any): Date {
+    return this.getCurrentMoment(time)
+      .add(months, 'months')
+      .endOf('days')
+      .toDate();
+  }
+
+  /**
+   * Get x days after start date
+   * @param days
+   * @param time
+   */
+  getXDaysAfterNextDayStartDate(days = 1, time?: any): Date {
     return this.getCurrentMoment(time)
       .add(days + 1, 'days')
       .startOf('days')
       .toDate();
   }
 
-  getTodayStartTime(time?) {
+  /**
+   * Get x days after start date
+   * @param time
+   */
+  getTodayStartDate(time?: any): Date {
     return this.getCurrentMoment(time).startOf('day').toDate();
   }
 
-  getTodayStartMoment(time?) {
+  /**
+   * Get today start moment
+   * @param time
+   */
+  getTodayStartMoment(time?: Moment.Moment | Date): Moment.Moment {
     return this.getCurrentMoment(time).startOf('day');
   }
 
-  diff(startTime, endTime, type?) {
+  /**
+   * Get date range of start and end
+   * @param startTime
+   * @param endTime
+   * @param type
+   */
+  diff(startTime: any, endTime: any, type?: any): number {
     const start = this.getCurrentMoment(startTime);
     const end = this.getCurrentMoment(endTime);
-    const day = end.diff(start, type || 'days');
-    return day;
+    return end.diff(start, type || 'days');
   }
 
-  getTodayEndTime(time?) {
+  /**
+   * Get today end date
+   * @param time
+   */
+  getTodayEndDate(time?: any): Date {
     return this.getCurrentMoment(time).endOf('day').toDate();
   }
 
-  getTodayEndMoment(time?) {
+  /**
+   * Get today end moment
+   * @param time
+   */
+  getTodayEndMoment(time?: any): Moment.Moment {
     return this.getCurrentMoment(time).endOf('day');
   }
 
-  getThisMonthStartTime() {
+  /**
+   * Get this month start time
+   * @returns {Date}
+   */
+  getThisMonthStartDate(): Date {
     return this.getCurrentMoment().startOf('month').toDate();
   }
 
-  getThisMonthEndTime() {
+  /**
+   * Get this month end time
+   * @returns {Date}
+   */
+  getThisMonthEndDate(): Date {
     return this.getCurrentMoment().endOf('month').toDate();
   }
 
-  getOneMonthRange(time) {
+  /**
+   * Get one month range
+   * @param time
+   */
+  getOneMonthRange(time: any): any {
     const startTime = this.getCurrentMoment(time)
       .subtract(1, 'months')
       .toDate();
@@ -189,30 +296,68 @@ class DateUtil {
     return { $gte: startTime, $lte: endTime };
   }
 
-  getXDayRange(range = 1, agoDays = 0, time?) {
-    const date = this.getXDaysAgoTime(agoDays, time);
+  /**
+   * Get range of x days ago
+   * @param range
+   * @param agoDays
+   * @param time
+   * @returns {{gte: Date, lte: Date}}
+   */
+  getXDayRange(range = 1, agoDays = 0, time?: any): any {
+    const date = this.getXDaysAgoDate(agoDays, time);
     return {
-      $gte: this.getXDaysAgoTime(range, date),
+      $gte: this.getXDaysAgoDate(range, date),
       $lte: date,
     };
   }
 
-  getForeverDate() {
+  /**
+   * Get forever date
+   * @returns {Date}
+   */
+  getForeverDate(): Date {
     return new Date('9999/01/01');
   }
 
-  getDaysDiff(start, end) {
+  /**
+   * Get days diff
+   * @param start
+   * @param end
+   */
+  getDaysDiff(start: Moment.Moment | Date, end: Moment.Moment | Date): number {
     start = this.getTodayStartMoment(start);
     end = this.getTodayStartMoment(end);
     return end.diff(start, 'days');
   }
 
-  isWorkDay(date = new Date()) {
+  /**
+   * Get months diff
+   * @param start
+   * @param end
+   */
+  getMonthsDiff(
+    start: Moment.Moment | Date,
+    end: Moment.Moment | Date,
+  ): number {
+    start = this.getTodayStartMoment(start);
+    end = this.getTodayStartMoment(end);
+    return end.diff(start, 'months');
+  }
+
+  /**
+   * Get current time of type string
+   * @param date
+   */
+  isWorkDay(date = new Date()): boolean {
     const days = [1, 2, 3, 4, 5];
     return _.includes(days, date.getDay());
   }
 
-  isWorkTime() {
+  /**
+   * Get current time of type string
+   * @returns {boolean}
+   */
+  isWorkTime(): boolean {
     const hour = this.getCurrentMoment().hours();
     return hour >= 9 && hour <= 20;
   }
