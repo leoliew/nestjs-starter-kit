@@ -48,7 +48,8 @@ $ npm run test:cov
 - [x] swagger / OpenAPI 3 included
 - [x] swagger API can auth with JWT
 - [x] global error handler
-- [ ] interface cache
+- [ ] interface cache via memory
+- [ ] interface cache via redis
 - [ ] interface anti-repetition limit
 - [ ] multi-module reference specification
 
