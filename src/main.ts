@@ -4,9 +4,13 @@ import * as basicAuth from 'express-basic-auth';
 import * as config from 'config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, RequestMethod } from '@nestjs/common';
+import { SwaggerConfig } from './common/interfaces/config.interface';
 
 async function bootstrap() {
-  const port = config.get('port');
+  // get environment config
+  const port = config.get('port') as number;
+  const swaggerConfig = config.get('swagger') as SwaggerConfig;
+
   const app = await NestFactory.create(AppModule, {
     logger: ['verbose'],
   });
@@ -24,9 +28,7 @@ async function bootstrap() {
     basicAuth({
       challenge: true,
       users: {
-        [config.get('swagger.swagger_user')]: config.get(
-          'swagger.swagger_password',
-        ),
+        [swaggerConfig.swaggerUser]: swaggerConfig.swaggerPassword,
       },
     }),
   );

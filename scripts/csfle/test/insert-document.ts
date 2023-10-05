@@ -1,30 +1,30 @@
-const mongodb = require('mongodb');
-const { ClientEncryption } = require('mongodb-client-encryption');
-const { MongoClient, Binary } = mongodb;
+import { MongoClient } from 'mongodb';
+import { getCredentials } from '../gcp-credentials';
 
-const { getCredentials } = require('../gcp-credentials');
-const { ObjectId } = require('mongodb');
-credentials = getCredentials();
+interface Credentials {
+  MONGODB_URI: string;
+  GCP_EMAIL: string;
+  GCP_PRIVATE_KEY: string;
+  SHARED_LIB_PATH: string;
+}
 
-var db = 'medicalRecords';
-var coll = 'patients';
-var namespace = `${db}.${coll}`;
-// start-kmsproviders
+const credentials: Credentials = getCredentials();
+
+const db = 'medicalRecords';
+const coll = 'patients';
+const namespace = `${db}.${coll}`;
+
 const kmsProviders = {
   gcp: {
-    email: credentials['GCP_EMAIL'],
-    privateKey: credentials['GCP_PRIVATE_KEY'],
+    email: credentials.GCP_EMAIL,
+    privateKey: credentials.GCP_PRIVATE_KEY,
   },
 };
-// end-kmsproviders
 
 const connectionString = credentials.MONGODB_URI;
 
-// start-key-vault
 const keyVaultNamespace = 'encryption.__keyVault';
-// end-key-vault
 
-// start-schema
 const schema = {
   bsonType: 'object',
   encryptMetadata: {
@@ -63,23 +63,16 @@ const schema = {
   },
 };
 
-var patientSchema = {};
+const patientSchema: { [key: string]: object } = {};
 patientSchema[namespace] = schema;
-// end-schema
 
-// start-extra-options
 const extraOptions = {
-  // mongocryptdSpawnPath: credentials["MONGOCRYPTD_PATH"],
   mongocryptdSpawnPath: credentials.SHARED_LIB_PATH,
 };
 
 console.log(extraOptions);
-// end-extra-options
 
-// start-client
 const secureClient = new MongoClient(connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   autoEncryption: {
     keyVaultNamespace,
     kmsProviders,
@@ -87,20 +80,16 @@ const secureClient = new MongoClient(connectionString, {
     extraOptions: extraOptions,
   },
 });
-// end-client
-const regularClient = new MongoClient(connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
-async function main() {
+const regularClient = new MongoClient(connectionString, {});
+
+async function main(): Promise<void> {
   try {
     await regularClient.connect();
     try {
       await secureClient.connect();
-      // start-insert
       try {
-        const writeResult = await secureClient
+        await secureClient
           .db(db)
           .collection(coll)
           .insertOne({
@@ -118,8 +107,7 @@ async function main() {
       } catch (writeError) {
         console.error('writeError occurred:', writeError);
       }
-      // end-insert
-      // start-find
+
       console.log('Finding a document with regular (non-encrypted) client.');
       console.log(
         await regularClient.db(db).collection(coll).findOne({ name: /Jon/ }),
@@ -130,9 +118,7 @@ async function main() {
       );
       console.log(
         await secureClient.db(db).collection(coll).findOne({ name: /Jon/ }),
-        // await secureClient.db(db).collection(coll).findOne({ _id: ObjectId("64c4f8f86d31f2840afbfde6") })
       );
-      // end-find
     } finally {
       await secureClient.close();
     }
@@ -140,4 +126,5 @@ async function main() {
     await regularClient.close();
   }
 }
+
 main();

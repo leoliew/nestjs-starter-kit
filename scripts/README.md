@@ -11,6 +11,6 @@
 ### create a kms provider by google
 
 - copy you google cloud service account key file to `script/csfle/private-key.json`
-- run `node script/csfle/make-kms-provider.js`
+- run `node script/csfle/make-kms-provider.ts`
 
 > ⚠️ warning: make kms provider, and will delete all this database's data

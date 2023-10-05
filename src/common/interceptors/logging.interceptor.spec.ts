@@ -1,5 +1,5 @@
 import { lastValueFrom, of } from 'rxjs';
-import { CallHandler, ExecutionContext } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpStatus } from '@nestjs/common';
 import { Constant, DateUtils } from '../../lib';
 import { LoggingInterceptor } from './logging.interceptor';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -42,7 +42,7 @@ describe('Logging Interceptor', () => {
         getRequest: jest.fn(() => ({
           warp: true,
           headers: {
-            'x-forwarded-for': '127.0.0.1',
+            'x-forwarded-for': '127.0.0.1, 172.71.214.238, 34.111.165.210',
           },
           query: {
             page: 1,
@@ -88,7 +88,7 @@ describe('Logging Interceptor', () => {
         DateUtils.diff(clientLogs.request_time, clientLogs.response_time, 'ms'),
       );
       expect(clientLogs.resp_code).toEqual(
-        Constant.CUSTOM_RESPONSE_CODE.SUCCESS.toString(),
+        Constant.CUSTOM_RESPONSE_CODE[HttpStatus.OK].toString(),
       );
       expect(clientLogs.resp_msg).toEqual(Constant.RESPONSE_MESSAGE.SUCCESS);
       expect(clientLogs.type).toEqual(ClientLogsTypes.IN);

@@ -36,7 +36,6 @@ describe('CatService', () => {
     const insertCats = mockModel.mockCat({});
     await catModel.create(insertCats);
     const cats = await service.findAll({ page: 1, limit: 10 });
-    console.log(cats);
     expect(cats.docs[0].name).toEqual(insertCats.name);
   });
 

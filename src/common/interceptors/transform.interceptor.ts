@@ -46,7 +46,7 @@ export class TransformInterceptor<T>
           res.status(HttpStatus.OK);
           return {
             data,
-            code: Constant.CUSTOM_RESPONSE_CODE.SUCCESS,
+            code: Constant.CUSTOM_RESPONSE_CODE[HttpStatus.OK],
             message: Constant.RESPONSE_MESSAGE.SUCCESS,
           };
         } else {

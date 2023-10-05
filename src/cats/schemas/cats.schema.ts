@@ -28,12 +28,16 @@ export class Cats extends Document {
 
 function encrypt(value: string) {
   if (!value) return value;
-  return Bcrypt.encrypt(value);
+  return Bcrypt.encrypt({
+    originData: value,
+  });
 }
 
 function decrypt(value: string) {
   if (!value) return value;
-  return Bcrypt.decrypt(value);
+  return Bcrypt.decrypt({
+    originData: value,
+  });
 }
 
 const CatsSchema = SchemaFactory.createForClass(Cats);

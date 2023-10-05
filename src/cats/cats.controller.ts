@@ -9,7 +9,6 @@ import {
   Req,
   Logger,
 } from '@nestjs/common';
-import { CreateCatDto, UpdateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cats } from './schemas/cats.schema';
 import { Response } from 'express';
@@ -20,12 +19,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import {
-  ReqByIdDto,
-  ReqPaginateDto,
-  RespPaginateDto,
-} from '../common/dto/crud.dto';
 import { TokenGuard } from '../common/guards/token.guard';
+import { CatCreateDto } from './dto/create.dto';
+import {
+  ByIdDto,
+  DeletedRes,
+  PaginateDto,
+  UpdatedRes,
+} from '../common/dto/crud.dto';
+import { CatFindAllRes } from './dto/find-all.dto';
+import { CatUpdateByIdDto } from './dto/update-by-id.dto';
+import { CatFindByIdRes } from './dto/find-by-id.dto';
 
 @ApiTags('cats')
 @Controller('cats')
@@ -37,10 +41,10 @@ export class CatsController {
   @ApiResponse({
     status: 200,
     description: 'The cat has been successfully created.',
-    type: CreateCatDto,
+    type: CatCreateDto,
   })
-  async create(@Body() createCatDto: CreateCatDto) {
-    return this.catsService.create(createCatDto);
+  async create(@Body() createDto: CatCreateDto) {
+    return this.catsService.create(createDto);
   }
 
   @Get('findAll')
@@ -48,32 +52,32 @@ export class CatsController {
   @ApiResponse({
     status: 200,
     description: 'The cats has been successfully returned.',
-    type: RespPaginateDto,
+    type: CatFindAllRes,
   })
-  async findAll(@Query() reqPaginateDto: ReqPaginateDto): Promise<Cats[]> {
-    return this.catsService.findAll(reqPaginateDto);
+  async findAll(@Query() paginateDto: PaginateDto): Promise<CatFindAllRes> {
+    return this.catsService.findAll(paginateDto);
   }
 
   @Get('findById')
   @ApiResponse({
     status: 200,
     description: 'The cat has been successfully returned.',
-    type: CreateCatDto,
+    type: CatFindByIdRes,
   })
   @ApiOperation({ summary: 'find cat by id' })
-  async findById(@Query() reqByIdDto: ReqByIdDto): Promise<Cats> {
-    return this.catsService.findById(reqByIdDto._id);
+  async findById(@Query() byIdDto: ByIdDto): Promise<CatFindByIdRes> {
+    return this.catsService.findById(byIdDto._id);
   }
 
-  @Post('update')
+  @Post('updateById')
   @ApiResponse({
     status: 200,
     description: 'The cat has been successfully updated.',
-    type: CreateCatDto,
+    type: UpdatedRes,
   })
-  @ApiOperation({ summary: 'update cat' })
-  async update(@Body() updateCatDto: UpdateCatDto): Promise<Cats> {
-    return this.catsService.updateOne(updateCatDto);
+  @ApiOperation({ summary: 'update cats by id' })
+  async updateById(@Body() updateByIdDto: CatUpdateByIdDto): Promise<Cats> {
+    return this.catsService.updateOne(updateByIdDto);
   }
 
   @UseGuards(TokenGuard)
@@ -82,33 +86,34 @@ export class CatsController {
   @ApiResponse({
     status: 200,
     description: 'The cat has been successfully deleted.',
-    type: CreateCatDto,
+    type: DeletedRes,
   })
   @ApiOperation({ summary: 'delete cat by id' })
   async deleteById(
     @Req() req: any,
-    @Body() reqByIdDto: ReqByIdDto,
+    @Body() reqByIdDto: ByIdDto,
   ): Promise<Cats> {
     // should get user info from request context
     Logger.log('user', req.user);
-    return this.catsService.deleteById(reqByIdDto._id);
+    return this.catsService.deleteById(reqByIdDto);
   }
 
   @Get('streamText')
   @ApiProduces('text/plain')
+  @ApiOperation({ summary: 'stream text sample ', deprecated: true })
   async getSlowText(@Res() res: Response) {
     const text =
       'This is a sample text. This is a sample text. This is a sample text.';
-    const delay = 100; // 延迟时间，单位为毫秒
-    // 设置响应头，指定内容类型
+    const delay = 100; // set delay to 100ms
+    // set header
     res.setHeader('Content-Type', 'text/plain');
-    // 将文本逐步写入响应
+    // write text to response
     for (let i = 0; i < text.length; i++) {
       const char = text.charAt(i);
       res.write(char);
       await delayAsync(delay);
     }
-    // 结束响应
+    // end response
     res.end();
   }
 }

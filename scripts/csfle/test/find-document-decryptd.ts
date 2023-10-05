@@ -1,30 +1,30 @@
-const mongodb = require('mongodb');
-const { ClientEncryption } = require('mongodb-client-encryption');
-const { MongoClient, Binary } = mongodb;
+import { MongoClient } from 'mongodb';
+import { getCredentials } from '../gcp-credentials';
 
-const { getCredentials } = require('../gcp-credentials');
-const { ObjectId } = require('mongodb');
-credentials = getCredentials();
+interface Credentials {
+  MONGODB_URI: string;
+  GCP_EMAIL: string;
+  GCP_PRIVATE_KEY: string;
+  SHARED_LIB_PATH: string;
+}
 
-var db = 'medicalRecords';
-var coll = 'patients';
-var namespace = `${db}.${coll}`;
-// start-kmsproviders
+const credentials: Credentials = getCredentials();
+
+const db = 'medicalRecords';
+const coll = 'patients';
+const namespace = `${db}.${coll}`;
+
 const kmsProviders = {
   gcp: {
-    email: credentials['GCP_EMAIL'],
-    privateKey: credentials['GCP_PRIVATE_KEY'],
+    email: credentials.GCP_EMAIL,
+    privateKey: credentials.GCP_PRIVATE_KEY,
   },
 };
-// end-kmsproviders
 
 const connectionString = credentials.MONGODB_URI;
 
-// start-key-vault
 const keyVaultNamespace = 'encryption.__keyVault';
-// end-key-vault
 
-// start-schema
 const schema = {
   bsonType: 'object',
   encryptMetadata: {
@@ -63,23 +63,16 @@ const schema = {
   },
 };
 
-var patientSchema = {};
+const patientSchema: { [key: string]: object } = {};
 patientSchema[namespace] = schema;
-// end-schema
 
-// start-extra-options
 const extraOptions = {
-  // mongocryptdSpawnPath: credentials["MONGOCRYPTD_PATH"],
   mongocryptdSpawnPath: credentials.SHARED_LIB_PATH,
 };
 
 console.log(extraOptions);
-// end-extra-options
 
-// start-client
 const secureClient = new MongoClient(connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   autoEncryption: {
     keyVaultNamespace,
     kmsProviders,
@@ -88,7 +81,7 @@ const secureClient = new MongoClient(connectionString, {
   },
 });
 
-async function main() {
+async function main(): Promise<void> {
   try {
     await secureClient.connect();
     console.log(
@@ -103,4 +96,5 @@ async function main() {
     await secureClient.close();
   }
 }
-main().then((r) => console.log('done'));
+
+main().then(() => console.log('done'));

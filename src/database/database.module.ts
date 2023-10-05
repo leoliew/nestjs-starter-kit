@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import * as config from 'config';
 import { MongooseModule } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-const { debug, connections } = config.get('mongodb');
+import { AppConfig } from '../common/interfaces/config.interface';
+const { debug, connections } = config.get('mongodb') as AppConfig['mongodb'];
 
 mongoose.set('debug', debug);
 @Module({

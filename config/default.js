@@ -32,14 +32,14 @@ module.exports = {
     proxy: 'http://127.0.0.1:7890',
   },
   swagger: {
-    swagger_user: 'user',
-    swagger_password: 'pass',
+    swaggerUser: 'user',
+    swaggerPassword: 'pass',
   },
   kms: {
-    gcp_location: 'australia-southeast1',
-    gcp_key_ring: 'sample',
-    gcp_key_name: 'sample',
-    gcp_key_version: '1',
+    gcpLocation: 'australia-southeast1',
+    gcpKeyRing: 'sample',
+    gcpKeyName: 'sample',
+    gcpKeyVersion: '1',
   },
   crypto: {
     algorithm: 'AES-256-CBC',

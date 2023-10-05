@@ -4,7 +4,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ValidationPipe } from './validation.pipe';
-import { CreateCatDto } from '../../cats/dto/create-cat.dto';
+import { CatCreateDto } from '../../cats/dto/create.dto';
 
 describe('Validation Pipe', () => {
   let pipe: ValidationPipe;
@@ -40,7 +40,7 @@ describe('Validation Pipe', () => {
     };
     const metadata: ArgumentMetadata = {
       type: 'body',
-      metatype: CreateCatDto,
+      metatype: CatCreateDto,
       data: '',
     } as any;
     await pipe.transform(value, metadata).catch((err) => {

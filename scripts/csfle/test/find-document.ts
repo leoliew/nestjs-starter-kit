@@ -1,19 +1,19 @@
-const mongodb = require('mongodb');
-const { MongoClient } = mongodb;
+import { MongoClient } from 'mongodb';
+import { getCredentials } from '../gcp-credentials';
 
-const { getCredentials } = require('../gcp-credentials');
-credentials = getCredentials();
+interface Credentials {
+  MONGODB_URI: string;
+}
+
+const credentials: Credentials = getCredentials();
 
 const db = 'medicalRecords';
 const coll = 'patients';
 const connectionString = credentials.MONGODB_URI;
 
-const regularClient = new MongoClient(connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const regularClient = new MongoClient(connectionString, {});
 
-async function main() {
+async function main(): Promise<void> {
   try {
     await regularClient.connect();
     const data = await regularClient
@@ -28,4 +28,5 @@ async function main() {
     await regularClient.close();
   }
 }
-main().then((r) => console.log('done'));
+
+main().then(() => console.log('done'));

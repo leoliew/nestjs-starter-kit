@@ -4,12 +4,12 @@ import {
   ExecutionContext,
   CallHandler,
   Logger,
+  HttpStatus,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Constant, DateUtils } from '../../lib';
-import { AppException } from '../exceptions/app.exception';
 import { Types, Model } from 'mongoose';
 import { ClientLogs } from '../schemas/client-logs.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -58,7 +58,10 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const ip = _.get(request.headers, 'x-forwarded-for') || 'none';
+    const ip =
+      request.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+      request.ip ||
+      'none';
     const request_id = request.headers['x-request-id'] || new Types.ObjectId();
     const request_time = Date.now();
     const url = request.url;
@@ -104,7 +107,9 @@ export class LoggingInterceptor implements NestInterceptor {
       }),
 
       catchError((error) => {
-        const resp_code = Constant.CUSTOM_RESPONSE_CODE.SERVICE_UNAVAILABLE;
+        const resp_code =
+          Constant.CUSTOM_RESPONSE_CODE[error.status] ||
+          Constant.CUSTOM_RESPONSE_CODE[HttpStatus.SERVICE_UNAVAILABLE];
         const tapRequest = context.switchToHttp().getRequest();
         const user_id =
           tapRequest['user_id'] || tapRequest.body['user_id'] || 'none';
@@ -125,7 +130,7 @@ export class LoggingInterceptor implements NestInterceptor {
           Logger.error(fileLog);
           this.clientLogs.create(log).then().catch();
         }
-        throw new AppException(error);
+        return throwError(() => error);
       }),
     );
   }
