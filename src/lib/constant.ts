@@ -1,4 +1,5 @@
 import * as config from 'config';
+import * as path from 'path';
 
 import {
   AssemblyConfig,
@@ -41,6 +42,32 @@ const Constant = {
     ERROR: 'unknown error!',
     UNAUTHORIZED: 'access denied',
     BAD_REQUEST: 'bad request',
+  },
+
+  // App error template
+  APP_ERROR_CODE: {
+    // Transcript error
+    TRANSCRIPT_TOO_SHORT: -1000,
+    TRANSCRIPT_TOKEN_LIMIT: -1001,
+    TRANSCRIPT_NOT_FOUND: -1002,
+    // File handle error
+    WRITE_BUFFER_ERROR: -1100,
+    FILE_UPLOAD_ERROR: -1101,
+    // Template error
+    SYSTEM_TEMPLATE_NOT_FOUND: -1200,
+    USER_TEMPLATE_NOT_FOUND: -1201,
+    // AI error
+    FUNCTION_CALL_ERROR: -1300,
+    OPEN_AI_CALL_ERROR: -1301,
+    OPEN_AI_SUMMARY_CALL_ERROR: -1302,
+    // System Data error
+    SYSTEM_DATA_NOT_FOUND: -1400,
+    // unknown error
+    UNKNOWN_ERROR: -9999,
+  },
+
+  PATH: {
+    ROOT_PATH: path.resolve(__dirname, '..'),
   },
 };
 
