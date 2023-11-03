@@ -5,7 +5,9 @@ module.exports = {
     connections: [
       {
         name: 'main',
-        mongodbURI: 'mongodb://localhost:27017/nestjs_dev',
+        mongodbURI:
+          process.env.CORE_MONGODB_URI ||
+          'mongodb://localhost:27017/nestjs_dev',
         options: {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -13,7 +15,9 @@ module.exports = {
       },
       {
         name: 'logs',
-        mongodbURI: 'mongodb://localhost:27017/nestjs_logs_dev',
+        mongodbURI:
+          process.env.LOG_MONGODB_URI ||
+          'mongodb://localhost:27017/nestjs_logs_dev',
         options: {
           useNewUrlParser: true,
           useUnifiedTopology: true,
