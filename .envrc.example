@@ -1,0 +1,3 @@
+export CORE_MONGODB_URI="mongodb://localhost:27017/docnow_dev"
+export LOG_MONGODB_URI="mongodb://localhost:27017/nestjs_dev"
+export NODE_ENV="localhost"
