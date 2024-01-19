@@ -47,7 +47,7 @@ module.exports = {
   },
   crypto: {
     algorithm: 'AES-256-CBC',
-    key: '5Mqxo6NUuJcUr4DpS56nmConIQH9ulTd',
-    iv: '5007063684459988',
+    key: '5Xxxo6XXxxXXr4XxX11nxXonXXX9xxXx',
+    iv: '1007063684450000',
   },
 };
